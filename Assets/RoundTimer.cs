@@ -7,10 +7,12 @@ public class RoundTimer : MonoBehaviour
 {
     //Text object that displays the current round time
     public TMP_Text timeDisplay;
+    public TMP_Text timerStateDisplay;
 
     //Variables that hold important numbers
     private float currTime;
     private int TIME_PER_ROUND;
+    static public int roundScore;
     
     //Holds the state of the round timer. Meant to be altered by other scripts.
     // "Ticking" --> Timer going down
@@ -21,19 +23,21 @@ public class RoundTimer : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        TIME_PER_ROUND = 10;
+        TIME_PER_ROUND = 15;
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (currTime < TIME_PER_ROUND && string.Equals(timerState, "Ticking")){ //If Round timer is up
+        if (currTime > TIME_PER_ROUND && string.Equals(timerState, "Ticking")){ //If Round timer is up
             //Disable all answer buttons, and show the right answer as green and wrong answers as red.
             timerState = "Paused";
-            currTime = 0;
         }
 
-
+        if (string.Equals(timerState, "Reset")){
+            currTime = 0;
+            timerState = "Ticking";
+        }
 
         //RoundTimer...
         //STARTS AT 10 SECONDS
@@ -46,6 +50,9 @@ public class RoundTimer : MonoBehaviour
         if (string.Equals(timerState, "Ticking")){
             currTime += Time.deltaTime;
         }
-        timeDisplay.text = "Time Remaining: " + Mathf.Ceil(TIME_PER_ROUND-currTime).ToString();
+        roundScore = (int)Mathf.Ceil(TIME_PER_ROUND-currTime);
+        timeDisplay.text = "Time Remaining: " + roundScore.ToString();
+        //TODO: REMOVE LATER
+        timerStateDisplay.text = timerState;
     }
 }

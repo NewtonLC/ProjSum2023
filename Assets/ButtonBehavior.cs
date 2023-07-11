@@ -33,7 +33,7 @@ public class ButtonBehavior : MonoBehaviour
 
         if (string.Equals(buttonID, answers[corrButton])){
             Debug.Log("Right Answer");
-            //TODO: Give points
+            ScoreManager.playerScore += RoundTimer.roundScore;
         }
         else {
             Debug.Log("Wrong Answer");
@@ -69,6 +69,8 @@ public class ButtonBehavior : MonoBehaviour
                 buttonTexts[i].text = "" + takenAnswers[i];
             }
         }
+
+        RoundTimer.timerState = "Reset";
     }
 
     //Helper method: Clears info off the field
