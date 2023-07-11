@@ -28,12 +28,19 @@ public class ButtonBehavior : MonoBehaviour
     }
 
     public void userAnswer(string buttonID){
+        //Disable all answer buttons, and show the right answer as green and wrong answers as red.
+        //TODO: This ^
+
         if (string.Equals(buttonID, answers[corrButton])){
             Debug.Log("Right Answer");
+            //TODO: Give points
         }
         else {
             Debug.Log("Wrong Answer");
         }
+
+        //Pause the round timer.
+        RoundTimer.timerState = "Paused";
     }
 
     //Method: Create a new mathematical problem and update the buttons.
