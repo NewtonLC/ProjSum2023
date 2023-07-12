@@ -3,17 +3,25 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class OperatorSelector : MonoBehaviour
+public class MenuSelector : MonoBehaviour
 {
+    //Variable to hold the current difficulty
+    static public string difficulty = "easy";
+
     //Keep track of the button objects. When the button is pressed, change the color to indicate ON/OFF.
-        //Find out how to change button color on click
-        //On click, remove or add the operator string from operators in ButtonBehavior
     public Color offColor;
     public Color onColor;
+
+    //Operator Selector objects
     public Button plusOp;
     public Button minusOp;
     public Button multiplyOp;
     //public Button divisionOp;
+
+    //Difficulty Selector objects
+    public Button easyDiff;
+    public Button mediumDiff;
+    public Button hardDiff;
     
     //Method: Manages selector button being pressed.
     // - Change the button's color
@@ -33,9 +41,31 @@ public class OperatorSelector : MonoBehaviour
                 changeOperator("*");
                 break;
         }
+    }
 
-        foreach( string x in ButtonBehavior.operators) {
-            Debug.Log( x.ToString());
+    public void selectDifficulty(string diff){
+        switch(difficulty){     //Set the previous difficulty's button to OFF color
+            case "easy":
+                changeButtonColor(easyDiff);
+                break;
+            case "medium":
+                changeButtonColor(mediumDiff);
+                break;
+            case "hard":
+                changeButtonColor(hardDiff);
+                break;
+        }
+        difficulty = diff;
+        switch(diff){           //Set the new difficulty's button to ON color
+            case "easy":
+                changeButtonColor(easyDiff);
+                break;
+            case "medium":
+                changeButtonColor(mediumDiff);
+                break;
+            case "hard":
+                changeButtonColor(hardDiff);
+                break;
         }
     }
 

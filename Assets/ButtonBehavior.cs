@@ -17,6 +17,12 @@ public class ButtonBehavior : MonoBehaviour
     private int corrButton = 0;
     public string[] answers = new string[] {"A","B","C","D"};
 
+    //Variables to determine the range of numbers that get displayed
+    private const int EASY_BASE_NUM = 5;
+    private const int MEDIUM_BASE_NUM = 9;
+    private const int HARD_BASE_NUM = 13;
+    private const int NUM_RANGE = 3;        //Ex: For Base of 6, Range of 4, numbers can be anywhere from 2 - 10.
+
     // Start is called before the first frame update
     void Start()
     {
@@ -28,9 +34,6 @@ public class ButtonBehavior : MonoBehaviour
     }
 
     public void userAnswer(string buttonID){
-        //Disable all answer buttons, and show the right answer as green and wrong answers as red.
-        //TODO: This ^
-
         if (string.Equals(buttonID, answers[corrButton])){
             Debug.Log("Right Answer");
             ScoreManager.playerScore += RoundTimer.roundScore;
@@ -45,12 +48,13 @@ public class ButtonBehavior : MonoBehaviour
 
     //Method: Create a new mathematical problem and update the buttons.
     public void newProblem(){
-        if (operators.Count == 0){
+        if (operators.Count == 0){      //If no operators are selected, clear the field.
             clearField();
             return;
         }
-        int int1 = Random.Range(1,11);
-        int int2 = Random.Range(1,11);
+
+        int int1 = Random.Range(probDifficulty(MenuSelector.difficulty)-NUM_RANGE,probDifficulty(MenuSelector.difficulty)+NUM_RANGE+1);  //Currently, difficulty only changes the number range
+        int int2 = Random.Range(probDifficulty(MenuSelector.difficulty)-NUM_RANGE,probDifficulty(MenuSelector.difficulty)+NUM_RANGE+1);
         string probOperator = operators[Random.Range(0,operators.Count)];
         float ans = solveProb(int1, int2, probOperator);
         //Put two integers and an operator between them in the TEXT.
@@ -71,6 +75,19 @@ public class ButtonBehavior : MonoBehaviour
         }
 
         RoundTimer.timerState = "Reset";
+    }
+
+    //Helper method: Decides number based on difficulty setting
+    private int probDifficulty(string difficulty){
+        switch(difficulty){
+            case "easy":
+                return EASY_BASE_NUM;
+            case "medium":
+                return MEDIUM_BASE_NUM;
+            case "hard":
+                return HARD_BASE_NUM;
+        }
+        return 0;
     }
 
     //Helper method: Clears info off the field

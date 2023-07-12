@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using TMPro;
 
 public class RoundTimer : MonoBehaviour
@@ -13,6 +14,9 @@ public class RoundTimer : MonoBehaviour
     private float currTime;
     private int TIME_PER_ROUND;
     static public int roundScore;
+
+    //Array that holds the 4 answer buttons - Disable them when timer is paused
+    public Button[] buttons;
     
     //Holds the state of the round timer. Meant to be altered by other scripts.
     // "Ticking" --> Timer going down
@@ -31,6 +35,7 @@ public class RoundTimer : MonoBehaviour
     {
         if (currTime > TIME_PER_ROUND && string.Equals(timerState, "Ticking")){ //If Round timer is up
             //Disable all answer buttons, and show the right answer as green and wrong answers as red.
+            disableButtons();
             timerState = "Paused";
         }
 
@@ -38,13 +43,6 @@ public class RoundTimer : MonoBehaviour
             currTime = 0;
             timerState = "Ticking";
         }
-
-        //RoundTimer...
-        //STARTS AT 10 SECONDS
-        //Stops when an answer is pressed.
-        //Resets when New Problem button is clicked.
-        //If it hits 0 on its own...
-            //Reset
         
         //Update the timer and text
         if (string.Equals(timerState, "Ticking")){
@@ -54,5 +52,21 @@ public class RoundTimer : MonoBehaviour
         timeDisplay.text = "Time Remaining: " + roundScore.ToString();
         //TODO: REMOVE LATER
         timerStateDisplay.text = timerState;
+    }
+
+    //Method: Disables all buttons so they cannot be pressed.
+    //Activates when any answer button is pressed or time runs out.
+    public void disableButtons(){
+        foreach (Button button in buttons){
+            button.interactable = false;
+        }
+    }
+
+    //Method: Enables all buttons to allow them to be pressed.
+    //Activates when New Problem button is pressed.
+    public void enableButtons(){
+        foreach (Button button in buttons){
+            button.interactable = true;
+        }
     }
 }
