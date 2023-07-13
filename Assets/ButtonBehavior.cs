@@ -60,7 +60,12 @@ public class ButtonBehavior : MonoBehaviour
         string probOperator = operators[Random.Range(0,operators.Count)];
         float ans = solveProb(int1, int2, probOperator);
         //Put two integers and an operator between them in the TEXT.
-        textProb.text = int1 + " " + probOperator + " " + int2;
+        if (int2 < 0){      //If int2 is negative, put it in parentheses.
+            textProb.text = int1 + " " + probOperator + " (" + int2 + ")";
+        }  
+        else{
+            textProb.text = int1 + " " + probOperator + " " + int2;
+        }
 
         //Update each of the 4 buttons randomly.
         corrButton = Random.Range(0,buttonTexts.Length);
@@ -87,7 +92,7 @@ public class ButtonBehavior : MonoBehaviour
 
         //Possibility of changing num to negative, based on difficulty level
         switch(difficulty){
-            case "normal":
+            case "medium":
                 if (Random.Range(0,8) >= 1)     // 1 in 8 chance of either int being negative in medium
                     num = -num;
                 break; 
