@@ -55,8 +55,8 @@ public class ButtonBehavior : MonoBehaviour
             return;
         }
 
-        int int1 = Random.Range(probDifficulty(MenuSelector.difficulty)-NUM_RANGE,probDifficulty(MenuSelector.difficulty)+NUM_RANGE+1);  //Currently, difficulty only changes the number range
-        int int2 = Random.Range(probDifficulty(MenuSelector.difficulty)-NUM_RANGE,probDifficulty(MenuSelector.difficulty)+NUM_RANGE+1);
+        int int1 = randomNum(MenuSelector.difficulty);  //Currently, difficulty only changes the number range
+        int int2 = randomNum(MenuSelector.difficulty);
         string probOperator = operators[Random.Range(0,operators.Count)];
         float ans = solveProb(int1, int2, probOperator);
         //Put two integers and an operator between them in the TEXT.
@@ -77,6 +77,29 @@ public class ButtonBehavior : MonoBehaviour
         }
 
         RoundTimer.timerState = "Reset";
+    }
+
+    //Helper method: Select an integer for newproblem.
+    private int randomNum(string difficulty){
+        //Call probDifficulty with difficulty to get the base int.
+        //Randomly choose an int within the range of the base.
+        int num = Random.Range(probDifficulty(difficulty)-NUM_RANGE, probDifficulty(difficulty)+NUM_RANGE+1);
+
+        //Possibility of changing num to negative, based on difficulty level
+        switch(difficulty){
+            case "normal":
+                if (Random.Range(0,8) >= 1)     // 1 in 8 chance of either int being negative in medium
+                    num = -num;
+                break; 
+            case "hard":
+                if (Random.Range(0,4) >= 1)     // 1 in 4 chance of either int being negative in hard
+                    num = -num;
+                break;
+            default:
+                break;
+        }
+
+        return num;
     }
 
     //Helper method: Decides number based on difficulty setting
