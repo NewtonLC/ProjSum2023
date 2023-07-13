@@ -17,6 +17,12 @@ public class RoundTimer : MonoBehaviour
 
     //Array that holds the 4 answer buttons - Disable them when timer is paused
     public Button[] buttons;
+
+    //On round end, the correct answer becomes rightColor and the wrong answers become wrongColor.
+    //On round start, all buttons return to the default color(probably white?)
+    public Color defaultColor;
+    public Color wrongColor;
+    public Color rightColor;
     
     //Holds the state of the round timer. Meant to be altered by other scripts.
     // "Ticking" --> Timer going down
@@ -60,13 +66,35 @@ public class RoundTimer : MonoBehaviour
         foreach (Button button in buttons){
             button.interactable = false;
         }
+        //Reveal button answers
+        revealAnswers();
     }
 
     //Method: Enables all buttons to allow them to be pressed.
     //Activates when New Problem button is pressed.
     public void enableButtons(){
+        resetAnswers();
         foreach (Button button in buttons){
             button.interactable = true;
+        }
+    }
+
+    //Helper Method: Reveals all answers
+    private void revealAnswers(){
+        foreach (Button button in buttons){
+            if (button == buttons[ButtonBehavior.corrButton]){
+                button.GetComponent<Image>().color = rightColor;
+            }
+            else{
+                button.GetComponent<Image>().color = wrongColor;
+            }
+        }
+    }
+
+    //Helper Method: Resets all answers
+    private void resetAnswers(){
+        foreach (Button button in buttons){
+            button.GetComponent<Image>().color = defaultColor;
         }
     }
 }

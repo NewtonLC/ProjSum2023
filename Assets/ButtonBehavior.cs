@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.UI;
 using TMPro;
 
 public class ButtonBehavior : MonoBehaviour
@@ -14,8 +15,9 @@ public class ButtonBehavior : MonoBehaviour
     static public List<string> operators = new List<string>();
 
     //Switch variable to determine which button has the right answer
-    private int corrButton = 0;
+    static public int corrButton = 0;
     public string[] answers = new string[] {"A","B","C","D"};
+    public Button[] buttons;
 
     //Variables to determine the range of numbers that get displayed
     private const int EASY_BASE_NUM = 5;
