@@ -3,7 +3,15 @@ guid: 5426e4189ce41bf4fa4e71ca592bf821
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
-  defaultReferences: []
+  defaultReferences:
+  - scoreBase: {instanceID: 0}
+  - lifeMult: {instanceID: 0}
+  - scoreFinal: {instanceID: 0}
+  - scoreHigh: {instanceID: 0}
+  - person1: {instanceID: 0}
+  - person2: {instanceID: 0}
+  - person3: {instanceID: 0}
+  - lifeDisplay: {instanceID: 0}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 

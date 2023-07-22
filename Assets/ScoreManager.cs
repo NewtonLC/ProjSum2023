@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 using TMPro;
 
 public class ScoreManager : MonoBehaviour
@@ -23,11 +24,23 @@ public class ScoreManager : MonoBehaviour
         scoreDisplay.text = "Score: " + playerScore.ToString();
         livesDisplay.text = "Lives: " + playerLives.ToString();
 
-        if (playerLives < 1){
+        if (playerLives == 0 && !ScoreScreenText.gameOver){
             //Player loses the game
             Debug.Log("YOU LOSE");
 
             //Game end, with stats.
+            gameEnd();
         }
+    }
+
+    // Method to process game end.
+    // Called when...
+        // Player time runs out
+        // Player loses all lives
+        // Player answers all necessary questions
+    void gameEnd(){
+        //Load the Score Screen scene
+        SceneManager.LoadScene("ScoreScreen");
+        ScoreScreenText.gameOver = true;
     }
 }
