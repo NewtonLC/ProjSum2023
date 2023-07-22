@@ -11,8 +11,12 @@ public class ScoreManager : MonoBehaviour
     static public int playerScore;
     static public int playerLives = 3;
     static public string difficulty = "easy";
-    static public string gameMode;
+    static public string gameMode = "time";
     static public List<string> operators = new List<string>();
+
+    //Variables to handle game-end scenarios(besides playerLives == 0)
+    static public int numProblems = 15;
+    static public float numSeconds = 30;
 
     //Text to display player's score and lives
     public TMP_Text scoreDisplay;
@@ -31,6 +35,23 @@ public class ScoreManager : MonoBehaviour
             //Game end, with stats.
             gameEnd();
         }
+
+        if (string.Equals(gameMode, "problems") && numProblems == 0){
+            Debug.Log("You answered " + (numProblems) + " problems!");
+
+            gameEnd();
+        }
+
+        if (string.Equals(gameMode, "time") && numSeconds < 0){
+            Debug.Log(((int)numSeconds).ToString() + " seconds have passed!");
+
+            gameEnd();
+        }
+    }
+
+    //Method to process game start.
+    void gameStart(){
+        
     }
 
     // Method to process game end.

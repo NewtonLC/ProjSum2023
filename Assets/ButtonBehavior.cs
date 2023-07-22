@@ -53,9 +53,11 @@ public class ButtonBehavior : MonoBehaviour
         }
         else {
             Debug.Log("Wrong Answer");
-            ScoreManager.playerLives -= 1;
+            ScoreManager.playerLives--;
         }
 
+        //Reduce the number of problems by 1 if the gameMode is set to "problems"
+        ScoreManager.numProblems--;
         //Pause the round timer.
         RoundTimer.timerState = "Reset";
     }

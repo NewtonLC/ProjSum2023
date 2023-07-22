@@ -10,8 +10,8 @@ using TMPro;
 public class ScoreScreenManager : MonoBehaviour
 {
     //Variables that hold whatever values you want
-    private string difficulty;
-    private string gameMode;
+    //private string difficulty;
+    //private string gameMode;
     private List<string> operators = new List<string>();
 
     //Variables that hold objects?
@@ -27,7 +27,7 @@ public class ScoreScreenManager : MonoBehaviour
     //Method that restarts the game, passing in 3 arguments for the 3 different settings
     public void toRestart(){
         string opers = returnOps();
-        Debug.Log("RESTART: DIFFICULTY, " + difficulty + ". MODE, " + gameMode + ". OPERATORS, " + opers);
+        Debug.Log("RESTART: DIFFICULTY, " + ScoreManager.difficulty + ". MODE, " + ScoreManager.gameMode + ". OPERATORS, " + opers);
     }
 
     //Method that shares with friends/posts on facebook
@@ -37,16 +37,16 @@ public class ScoreScreenManager : MonoBehaviour
 
     //Method that changes the mode(and alters button states)
     public void changeMode(string gMode){
-        gameMode = gMode;
-        Debug.Log(gameMode);
+        ScoreManager.gameMode = gMode;
+        Debug.Log(ScoreManager.gameMode);
 
         //TODO: Alter button state; make bolded if not bolded, remove bold from other buttons, etc.
     }
 
     //Method that changes the difficulty(and alters button states)
     public void changeDifficulty(string diff){
-        difficulty = diff;
-        Debug.Log(difficulty);
+        ScoreManager.difficulty = diff;
+        Debug.Log(ScoreManager.difficulty);
 
         //TODO: Alter button state; make bolded if not bolded, remove bold from other buttons, etc.
     }
