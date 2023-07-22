@@ -5,6 +5,8 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
+//Manages the button behaviors for answering questions
+
 public class ButtonBehavior : MonoBehaviour
 {
     //Text and button objects
@@ -25,6 +27,9 @@ public class ButtonBehavior : MonoBehaviour
     private const int HARD_BASE_NUM = 13;
     private const int NUM_RANGE = 3;        //Ex: For Base of 6, Range of 4, numbers can be anywhere from 2 - 10.
 
+    //Switch variable used to call newProblem
+    static public bool resetProb;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -35,6 +40,12 @@ public class ButtonBehavior : MonoBehaviour
         newProblem();
     }
 
+    void Update(){
+        if(resetProb){
+            newProblem();
+        }
+    }
+
     public void userAnswer(string buttonID){
         if (string.Equals(buttonID, answers[corrButton])){
             Debug.Log("Right Answer");
@@ -42,10 +53,11 @@ public class ButtonBehavior : MonoBehaviour
         }
         else {
             Debug.Log("Wrong Answer");
+            ScoreManager.playerLives -= 1;
         }
 
         //Pause the round timer.
-        RoundTimer.timerState = "Paused";
+        RoundTimer.timerState = "Reset";
     }
 
     //Method: Create a new mathematical problem and update the buttons.
@@ -55,8 +67,8 @@ public class ButtonBehavior : MonoBehaviour
             return;
         }
 
-        int int1 = randomNum(MenuSelector.difficulty);  //Currently, difficulty only changes the number range
-        int int2 = randomNum(MenuSelector.difficulty);
+        int int1 = randomNum(ScoreManager.difficulty);  //Currently, difficulty only changes the number range
+        int int2 = randomNum(ScoreManager.difficulty);
         string probOperator = operators[Random.Range(0,operators.Count)];
         float ans = solveProb(int1, int2, probOperator);
         //Put two integers and an operator between them in the TEXT.
@@ -81,7 +93,7 @@ public class ButtonBehavior : MonoBehaviour
             }
         }
 
-        RoundTimer.timerState = "Reset";
+        resetProb = false;
     }
 
     //Helper method: Select an integer for newproblem.

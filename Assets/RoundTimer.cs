@@ -11,24 +11,20 @@ public class RoundTimer : MonoBehaviour
     public TMP_Text timerStateDisplay;
 
     //Variables that hold important numbers
-    private float currTime;
+    private float currTime = 0;
     private int TIME_PER_ROUND;
     static public int roundScore;
 
     //Array that holds the 4 answer buttons - Disable them when timer is paused
     public Button[] buttons;
-
-    //On round end, the correct answer becomes rightColor and the wrong answers become wrongColor.
-    //On round start, all buttons return to the default color(probably white?)
-    public Color defaultColor;
-    public Color wrongColor;
-    public Color rightColor;
     
     //Holds the state of the round timer. Meant to be altered by other scripts.
     // "Ticking" --> Timer going down
-    // "Paused"  --> Timer stopped
     // "Reset"   --> Reset timer, then switch to "Ticking"
     static public string timerState;
+
+    //AnswerRing GameObject, for displaying the correct answer
+    public GameObject AnswerRing;
 
     // Start is called before the first frame update
     void Start()
@@ -40,13 +36,13 @@ public class RoundTimer : MonoBehaviour
     void Update()
     {
         if (currTime > TIME_PER_ROUND && string.Equals(timerState, "Ticking")){ //If Round timer is up
-            //Disable all answer buttons, and show the right answer as green and wrong answers as red.
-            disableButtons();
-            timerState = "Paused";
+            timerState = "Reset";
         }
 
         if (string.Equals(timerState, "Reset")){
-            currTime = 0;
+            revealAnswers();
+            ButtonBehavior.resetProb = true;    //Switch variable to call newProblem() in ButtonBehavior script
+            currTime = 0;                       //Resets the timer.
             timerState = "Ticking";
         }
         
@@ -60,41 +56,13 @@ public class RoundTimer : MonoBehaviour
         timerStateDisplay.text = timerState;
     }
 
-    //Method: Disables all buttons so they cannot be pressed.
-    //Activates when any answer button is pressed or time runs out.
-    public void disableButtons(){
-        foreach (Button button in buttons){
-            button.interactable = false;
-        }
-        //Reveal button answers
-        revealAnswers();
-    }
-
-    //Method: Enables all buttons to allow them to be pressed.
-    //Activates when New Problem button is pressed.
-    public void enableButtons(){
-        resetAnswers();
-        foreach (Button button in buttons){
-            button.interactable = true;
-        }
-    }
-
-    //Helper Method: Reveals all answers
+    //Helper Method: Reveal the answer
+    //Spawn an AnswerRing object on the location of the correct button
     private void revealAnswers(){
-        foreach (Button button in buttons){
-            if (button == buttons[ButtonBehavior.corrButton]){
-                button.GetComponent<Image>().color = rightColor;
-            }
-            else{
-                button.GetComponent<Image>().color = wrongColor;
-            }
-        }
-    }
+        float xPos = buttons[ButtonBehavior.corrButton].transform.position.x;
+        float yPos = buttons[ButtonBehavior.corrButton].transform.position.y;
 
-    //Helper Method: Resets all answers
-    private void resetAnswers(){
-        foreach (Button button in buttons){
-            button.GetComponent<Image>().color = defaultColor;
-        }
+        Vector3 SpawnPos = new Vector3(xPos, yPos, 0);
+        GameObject answer = Instantiate(AnswerRing, SpawnPos, Quaternion.identity);
     }
 }

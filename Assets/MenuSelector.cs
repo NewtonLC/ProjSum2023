@@ -5,9 +5,6 @@ using UnityEngine.UI;
 
 public class MenuSelector : MonoBehaviour
 {
-    //Variable to hold the current difficulty
-    static public string difficulty = "easy";
-
     //Keep track of the button objects. When the button is pressed, change the color to indicate ON/OFF.
     public Color offColor;
     public Color onColor;
@@ -44,7 +41,7 @@ public class MenuSelector : MonoBehaviour
     }
 
     public void selectDifficulty(string diff){
-        switch(difficulty){     //Set the previous difficulty's button to OFF color
+        switch(ScoreManager.difficulty){     //Set the previous difficulty's button to OFF color
             case "easy":
                 changeButtonColor(easyDiff);
                 break;
@@ -55,7 +52,7 @@ public class MenuSelector : MonoBehaviour
                 changeButtonColor(hardDiff);
                 break;
         }
-        difficulty = diff;
+        ScoreManager.difficulty = diff;
         switch(diff){           //Set the new difficulty's button to ON color
             case "easy":
                 changeButtonColor(easyDiff);
