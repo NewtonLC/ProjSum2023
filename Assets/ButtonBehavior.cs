@@ -33,10 +33,6 @@ public class ButtonBehavior : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        operators.Add("+");
-        //operators.Add("-");
-        //operators.Add("*");
-        //operators.Add("/");
         newProblem();
     }
 
@@ -158,6 +154,8 @@ public class ButtonBehavior : MonoBehaviour
                 return int1*int2;
             case "/":
                 return (float)int1/int2;
+            case "%":
+                return int1%int2;
         }
         return 0;
     }

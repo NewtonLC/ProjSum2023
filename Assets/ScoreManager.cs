@@ -12,7 +12,7 @@ public class ScoreManager : MonoBehaviour
     static public int playerLives = 3;
     static public string difficulty = "easy";
     static public string gameMode = "time";
-    static public List<string> operators = new List<string>();
+    //Access operators list through ButtonBehavior.operators
 
     //Variables to handle game-end scenarios(besides playerLives == 0)
     static public int numProblems = 15;
@@ -63,5 +63,6 @@ public class ScoreManager : MonoBehaviour
         //Load the Score Screen scene
         SceneManager.LoadScene("ScoreScreen");
         ScoreScreenText.gameOver = true;
+        ScoreScreenManager.enterMenu = true;
     }
 }

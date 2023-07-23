@@ -27,7 +27,7 @@ public class RoundTimer : MonoBehaviour
     public GameObject AnswerRing;
 
     void Start(){
-        timerState = "Ticking";
+    
     }
 
     // Update is called once per frame
