@@ -20,72 +20,61 @@ public class MenuSelector : MonoBehaviour
     public Button mediumDiff;
     public Button hardDiff;
     
+    
     //Method: Manages selector button being pressed.
     // - Change the button's color
     // - Add/Remove the operator from operators in ButtonBehavior
-    public void selectOperator(string op){
-        switch(op){
+    public void SelectOperator(string op) {
+        switch (op) {
             case "+":
-                changeButtonColor(plusOp);
-                changeOperator("+");
+                ChangeButtonColor(plusOp, onColor);
+                ChangeOperator("+");
                 break;
             case "-":
-                changeButtonColor(minusOp);
-                changeOperator("-");
+                ChangeButtonColor(minusOp, onColor);
+                ChangeOperator("-");
                 break;
             case "*":
-                changeButtonColor(multiplyOp);
-                changeOperator("*");
+                ChangeButtonColor(multiplyOp, onColor);
+                ChangeOperator("*");
                 break;
         }
     }
 
-    public void selectDifficulty(string diff){
-        switch(ScoreManager.difficulty){     //Set the previous difficulty's button to OFF color
-            case "easy":
-                changeButtonColor(easyDiff);
-                break;
-            case "medium":
-                changeButtonColor(mediumDiff);
-                break;
-            case "hard":
-                changeButtonColor(hardDiff);
-                break;
-        }
+    public void SelectDifficulty(string diff) {
+        // Set the previous difficulty's button to OFF color
+        ChangeButtonColor(GetDifficultyButton(ScoreManager.difficulty), offColor);
+
+        // Set the new difficulty's button to ON color
+        ChangeButtonColor(GetDifficultyButton(diff), onColor);
+
         ScoreManager.difficulty = diff;
-        switch(diff){           //Set the new difficulty's button to ON color
+    }
+
+    // Method: Change the color of the button
+    private void ChangeButtonColor(Button button, Color color) {
+        button.GetComponent<Image>().color = color;
+    }
+
+    // Helper Method: Get the button associated with the difficulty
+    private Button GetDifficultyButton(string diff) {
+        switch (diff) {
             case "easy":
-                changeButtonColor(easyDiff);
-                break;
+                return easyDiff;
             case "medium":
-                changeButtonColor(mediumDiff);
-                break;
+                return mediumDiff;
             case "hard":
-                changeButtonColor(hardDiff);
-                break;
+                return hardDiff;
+            default:
+                return null; // Return null or handle an invalid difficulty input appropriately
         }
-    }
-
-    //Method: Change the color of the button to reflect on/off
-    public void changeButtonColor(Button button){
-        if (buttonOn(button)){      //Turn off
-            button.GetComponent<Image>().color = offColor;
-        }
-        else{                       //Turn on
-            button.GetComponent<Image>().color = onColor;
-        }
-    }
-
-    //Helper Method: Check if buttons are on/off based on their color
-    private bool buttonOn(Button button){
-        return button.GetComponent<Image>().color == onColor;
     }
 
     //Helper Method: Edit the operators list
-    public void changeOperator(string op){
+    public void ChangeOperator(string op){
         if (ButtonBehavior.operators.Contains(op)){     //Remove operator
             ButtonBehavior.operators.Remove(op);
-        }
+    }
         else {                                          //Add operator
             ButtonBehavior.operators.Add(op);
         }
