@@ -14,24 +14,31 @@ public class ScoreScreenManager : MonoBehaviour
     public TMP_Text[] gameModes;
     public TMP_Text[] difficulties;
     public TMP_Text[] operators;
+    public TMP_Text[] amounts;
+    public Button[] amountButtons;
 
     //Variable that checks if the user is at a menu
-    static public bool enterMenu = true;
+    static public bool enterScoreMenu = false;
+    static public bool enterMainMenu = true;
 
     void Update(){
-        if (enterMenu){
+        if ((enterMainMenu && string.Equals(SceneManager.GetActiveScene().name, "MainMenuScreen")) || (enterScoreMenu && string.Equals(SceneManager.GetActiveScene().name, "ScoreScreen"))){
+            Debug.Log(SceneManager.GetActiveScene().name);
             loadGameModes();
             loadDifficulties();
             loadOperators();
-            enterMenu = false;
+            loadAmounts();        //TODO: MAKE THIS AN ACTUAL METHOD
+            enterMainMenu = false;
+            enterScoreMenu = false;
         }
     }
 
     //Method that returns to main menu
         //Switches to another scene that just reads "MAIN MENU" and that's it...
     public void toMainMenu(){
-        Debug.Log("Return to main menu");
         SceneManager.LoadScene("MainMenuScreen");
+        Debug.Log(ScoreManager.gameMode);
+        enterMainMenu = true;
     }
 
     //Method that restarts the game, passing in 3 arguments for the 3 different settings
@@ -43,6 +50,8 @@ public class ScoreScreenManager : MonoBehaviour
 
         SceneManager.LoadScene("GameplayScreen");
         RoundTimer.timerState = "Ticking";
+        ScoreManager.numSeconds = AmountSelector.AMOUNT_TIMES[AmountSelector.amount];
+        ScoreManager.numProblems = AmountSelector.AMOUNT_PROBLEMS[AmountSelector.amount];
         ScoreManager.playerScore = 0;
         ScoreManager.playerLives = 3;
 
@@ -58,17 +67,13 @@ public class ScoreScreenManager : MonoBehaviour
     //Method that changes the mode(and alters button states)
     public void changeMode(string gMode){
         ScoreManager.gameMode = gMode;
-        Debug.Log(ScoreManager.gameMode);
-
-        //TODO: Alter button state; make bolded if not bolded, remove bold from other buttons, etc.
+        Debug.Log(ScoreManager.gameMode);  
     }
 
     //Method that changes the difficulty(and alters button states)
     public void changeDifficulty(string diff){
         ScoreManager.difficulty = diff;
-        Debug.Log(ScoreManager.difficulty);
-
-        //TODO: Alter button state; make bolded if not bolded, remove bold from other buttons, etc.
+        Debug.Log(ScoreManager.difficulty); 
     }
 
     //Method that changes the operators(and alters button states)
@@ -81,8 +86,6 @@ public class ScoreScreenManager : MonoBehaviour
             ButtonBehavior.operators.Add(op);
         }
         Debug.Log(returnOps());
-
-        //TODO: Alter button state; make bolded if not bolded, remove bold if bolded.
     }
 
     //TEMP HELPER METHOD: RETURN OPERATORS
@@ -94,28 +97,39 @@ public class ScoreScreenManager : MonoBehaviour
         return opers;
     }
 
-    //Alters button: Sets the argument button to bold text, changes any other bold texts to regular
-    public void difficultySelect(TMP_Text buttText){
-        foreach(TMP_Text txt in difficulties){
-            if ((txt.fontStyle & FontStyles.Bold) != 0)
-                txt.fontStyle ^= FontStyles.Bold;
-                txt.fontSize = 14;
+    //Method: Calls the button select based on given TMP object
+    public void findSelect(TMP_Text txt){
+        if (containsText(txt, gameModes)){
+            boldSelect(txt, gameModes);
         }
-
-        buttText.fontStyle = FontStyles.Bold;
-        buttText.fontSize = 16;
+        if (containsText(txt, difficulties)){
+            boldSelect(txt, difficulties);
+        }
+        if (containsText(txt, amounts)){
+            boldSelect(txt, amounts);
+        }
     }
 
-    //Alters button: FOR SOME REASON YOU CAN'T PASS MULTIPLE ARGUMENTS ON BUTTON CLICK IN INSPECTOR SO JUST HAVE TWO METHODS, ONE FOR MODE, ONE FOR DIFFICULTY
-    public void modeSelect(TMP_Text buttText){
-        foreach(TMP_Text txt in gameModes){
+    //Helper Method: Sets the argument button to bold text, changes any other bold texts to regular
+    private void boldSelect(TMP_Text boldTxt, TMP_Text[] txt_list){
+        foreach(TMP_Text txt in txt_list){
             if ((txt.fontStyle & FontStyles.Bold) != 0)
                 txt.fontStyle ^= FontStyles.Bold;
                 txt.fontSize = 14;
         }
 
-        buttText.fontStyle = FontStyles.Bold;
-        buttText.fontSize = 16;
+        boldTxt.fontStyle = FontStyles.Bold;
+        boldTxt.fontSize = 16;
+    }
+
+    //Helper Method: Checks if a buttonText is in a given array
+    private bool containsText(TMP_Text returnTxt, TMP_Text[] txt_list){
+        foreach(TMP_Text txt in txt_list){
+            if (returnTxt.GetInstanceID() == txt.GetInstanceID()){
+                return true;
+            }
+        }
+        return false;
     }
 
     //Alters button: Sets argument button to bold text if regular, set to regular if bold.
@@ -134,16 +148,16 @@ public class ScoreScreenManager : MonoBehaviour
     private void loadGameModes(){
         switch(ScoreManager.gameMode){
             case "time":
-                modeSelect(gameModes[0]);
+                boldSelect(gameModes[0], gameModes);
                 break;
             case "problems":
-                modeSelect(gameModes[1]);
+                boldSelect(gameModes[1], gameModes);
                 break;
             case "zen":
-                modeSelect(gameModes[2]);
+                boldSelect(gameModes[2], gameModes);
                 break;
             case "vs":
-                modeSelect(gameModes[3]);
+                boldSelect(gameModes[3], gameModes);
                 break;
             default:
                 break;
@@ -154,13 +168,13 @@ public class ScoreScreenManager : MonoBehaviour
     private void loadDifficulties(){
         switch(ScoreManager.difficulty){
             case "easy":
-                difficultySelect(difficulties[0]);
+                boldSelect(difficulties[0], difficulties);
                 break;
             case "medium":
-                difficultySelect(difficulties[1]);
+                boldSelect(difficulties[1], difficulties);
                 break;
             case "hard":
-                difficultySelect(difficulties[2]);
+                boldSelect(difficulties[2], difficulties);
                 break;
             default:
                 break;
@@ -189,6 +203,39 @@ public class ScoreScreenManager : MonoBehaviour
                 default:
                     break;
             }
+        }
+    }
+
+    //Method that loads amount selector buttons
+    private void loadAmounts(){
+        switch(ScoreManager.gameMode){
+            case "time":
+                changeAmounts(AmountSelector.AMOUNT_TIMES);
+                boldSelect(amounts[AmountSelector.amount], amounts);
+                break;
+            case "problems":
+                changeAmounts(AmountSelector.AMOUNT_PROBLEMS);
+                boldSelect(amounts[AmountSelector.amount], amounts);
+                break;
+            default:
+                hideAmounts();
+                break;
+        }
+    }
+
+    //Helper Method that hides the amount selectors
+    private void hideAmounts(){
+        foreach(Button amount in amountButtons){
+            amount.gameObject.SetActive(false);
+        }
+    }
+
+    //Helper Method that changes the amount selectors' text
+    private void changeAmounts(int[] amoList){
+        for (int i = 0;i < amountButtons.Length;i++){
+            amountButtons[i].gameObject.SetActive(true);
+            amounts[i].text = amoList[i].ToString();
+            Debug.Log(amoList[i].ToString());
         }
     }
 }

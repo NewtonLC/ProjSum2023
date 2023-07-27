@@ -63,6 +63,6 @@ public class ScoreManager : MonoBehaviour
         //Load the Score Screen scene
         SceneManager.LoadScene("ScoreScreen");
         ScoreScreenText.gameOver = true;
-        ScoreScreenManager.enterMenu = true;
+        ScoreScreenManager.enterScoreMenu = true;
     }
 }
