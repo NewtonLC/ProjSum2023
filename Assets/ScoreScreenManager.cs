@@ -207,7 +207,7 @@ public class ScoreScreenManager : MonoBehaviour
     }
 
     //Method that loads amount selector buttons
-    private void loadAmounts(){
+    public void loadAmounts(){
         switch(ScoreManager.gameMode){
             case "time":
                 changeAmounts(AmountSelector.AMOUNT_TIMES);
