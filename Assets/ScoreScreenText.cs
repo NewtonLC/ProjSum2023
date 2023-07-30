@@ -42,7 +42,8 @@ public class ScoreScreenText : MonoBehaviour
     void displayStats(){
         scoreBase.text += ScoreManager.playerScore.ToString();
         lifeMult.text += ScoreManager.playerLives.ToString() + "x";
-        scoreFinal.text += (ScoreManager.playerScore * ScoreManager.playerLives).ToString();
+        scoreFinal.text += (ScoreManager.playerScore * ScoreManager.playerLives).ToString() + " " +ScoreManager.numProblemsCorrect + "/" + ScoreManager.numProblemsAnswered;
+
         displayLives();
         //TODO: Add high score. you'll need to find a way to save the user's progress.
     }

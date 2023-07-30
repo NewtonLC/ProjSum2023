@@ -54,6 +54,8 @@ public class ScoreScreenManager : MonoBehaviour
         ScoreManager.numProblems = AmountSelector.AMOUNT_PROBLEMS[AmountSelector.amount];
         ScoreManager.playerScore = 0;
         ScoreManager.playerLives = 3;
+        ScoreManager.numProblemsAnswered = 0;
+        ScoreManager.numProblemsCorrect = 0;
 
         string opers = returnOps();
         Debug.Log("RESTART: DIFFICULTY, " + ScoreManager.difficulty + ". MODE, " + ScoreManager.gameMode + ". OPERATORS, " + opers);

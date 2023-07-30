@@ -5,10 +5,11 @@ using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using TMPro;
 
-public class ScoreManager : MonoBehaviour
-{
+public class ScoreManager : MonoBehaviour {
     //Static variables to hold the player's stats and information
     static public int playerScore;
+    static public int numProblemsAnswered;
+    static public int numProblemsCorrect;
     static public int playerLives = 3;
     static public string difficulty = "easy";
     static public string gameMode = "time";
@@ -23,8 +24,7 @@ public class ScoreManager : MonoBehaviour
     public TMP_Text livesDisplay;
 
     // Update is called once per frame
-    void Update()
-    {
+    void Update() {
         scoreDisplay.text = "Score: " + playerScore.ToString();
         livesDisplay.text = "Lives: " + playerLives.ToString();
 
@@ -47,11 +47,6 @@ public class ScoreManager : MonoBehaviour
 
             gameEnd();
         }
-    }
-
-    //Method to process game start.
-    void gameStart(){
-        
     }
 
     // Method to process game end.

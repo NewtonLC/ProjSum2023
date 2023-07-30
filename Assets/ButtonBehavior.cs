@@ -7,8 +7,7 @@ using TMPro;
 
 //Manages the button behaviors for answering questions
 
-public class ButtonBehavior : MonoBehaviour
-{
+public class ButtonBehavior : MonoBehaviour{
     //Text and button objects
     public TMP_Text textProb;
     public TMP_Text[] buttonTexts;
@@ -17,7 +16,7 @@ public class ButtonBehavior : MonoBehaviour
     static public List<string> operators = new List<string>();
 
     //Switch variable to determine which button has the right answer
-    static public int corrButton = 0;
+    static public int correctButton = 0;
     public string[] answers = new string[] {"A","B","C","D"};
     public Button[] buttons;
 
@@ -31,8 +30,7 @@ public class ButtonBehavior : MonoBehaviour
     static public bool resetProb;
 
     // Start is called before the first frame update
-    void Start()
-    {
+    void Start(){
         newProblem();
     }
 
@@ -43,9 +41,11 @@ public class ButtonBehavior : MonoBehaviour
     }
 
     public void userAnswer(string buttonID){
-        if (string.Equals(buttonID, answers[corrButton])){
+        
+        if (string.Equals(buttonID, answers[correctButton])){
             Debug.Log("Right Answer");
             ScoreManager.playerScore += RoundTimer.roundScore;
+            ScoreManager.numProblemsCorrect++; 
         }
         else {
             Debug.Log("Wrong Answer");
@@ -54,6 +54,8 @@ public class ButtonBehavior : MonoBehaviour
 
         //Reduce the number of problems by 1 if the gameMode is set to "problems"
         ScoreManager.numProblems--;
+        ScoreManager.numProblemsAnswered++;
+
         //Pause the round timer.
         RoundTimer.timerState = "Reset";
     }
@@ -67,23 +69,27 @@ public class ButtonBehavior : MonoBehaviour
 
         int int1 = randomNum(ScoreManager.difficulty);  //Currently, difficulty only changes the number range
         int int2 = randomNum(ScoreManager.difficulty);
-        string probOperator = operators[Random.Range(0,operators.Count)];
-        float ans = solveProb(int1, int2, probOperator);
-        //Put two integers and an operator between them in the TEXT.
-        if (int2 < 0){      //If int2 is negative, put it in parentheses.
-            textProb.text = int1 + " " + probOperator + " (" + int2 + ")";
-        }  
-        else{
-            textProb.text = int1 + " " + probOperator + " " + int2;
-        }
+        string problemOperator = operators[Random.Range(0,operators.Count)];
+        float ans = solveProb(int1, int2, problemOperator);
 
+        //parentheses for negatives
+        textProb.text = int1<0?"(" + int1 + ")":int1.ToString();
+        textProb.text += " " + problemOperator;
+        textProb.text += int2<0?" (" + int2 + ")":" " +int2.ToString();
+
+        
         //Update each of the 4 buttons randomly.
-        corrButton = Random.Range(0,buttonTexts.Length);
+        correctButton = Random.Range(0,buttonTexts.Length);
         float[] takenAnswers = new float[buttonTexts.Length];
         for(int i = 0;i < buttonTexts.Length;i++){
-            if (i == corrButton){
+            if (i == correctButton){
                 takenAnswers[i] = ans;
-                buttonTexts[i].text = "" + ans;
+                if (string.Equals(problemOperator,"/")) {
+                    buttonTexts[i].text = "" + ans.ToString("F3");
+                }
+                else {
+                    buttonTexts[i].text = "" + ans;
+                }
             }
             else {
                 takenAnswers[i] = findWrongAns(ans, takenAnswers);
@@ -144,8 +150,8 @@ public class ButtonBehavior : MonoBehaviour
     }
 
     //Helper Method: Solve the problem.
-    private float solveProb(int int1, int int2, string probOperator){
-        switch(probOperator){
+    private float solveProb(int int1, int int2, string problemOperator){
+        switch(problemOperator){
             case "+":
                 return int1+int2;
             case "-":
