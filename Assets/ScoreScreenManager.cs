@@ -10,6 +10,9 @@ using TMPro;
 
 public class ScoreScreenManager : MonoBehaviour
 {
+    //Number of operators
+    private const int NUM_OPERATORS = 5;
+
     //Variables that hold objects?
     public TMP_Text[] gameModes;
     public TMP_Text[] difficulties;
@@ -34,7 +37,6 @@ public class ScoreScreenManager : MonoBehaviour
     }
 
     //Method that returns to main menu
-        //Switches to another scene that just reads "MAIN MENU" and that's it...
     public void toMainMenu(){
         SceneManager.LoadScene("MainMenuScreen");
         Debug.Log(ScoreManager.gameMode);
@@ -52,10 +54,17 @@ public class ScoreScreenManager : MonoBehaviour
         RoundTimer.timerState = "Ticking";
         ScoreManager.numSeconds = AmountSelector.AMOUNT_TIMES[AmountSelector.amount];
         ScoreManager.numProblems = AmountSelector.AMOUNT_PROBLEMS[AmountSelector.amount];
-        ScoreManager.playerScore = 0;
         ScoreManager.playerLives = 3;
         ScoreManager.numProblemsAnswered = 0;
         ScoreManager.numProblemsCorrect = 0;
+        RoundTimer.amountTimeElapsed = 0;
+        RoundTimer.AnswerTimes.Clear();
+
+        for (int i = 0;i < NUM_OPERATORS;i++){
+            ScoreManager.numProblemsAnsweredPerOperator[i] = 0;
+            ScoreManager.numProblemsCorrectPerOperator[i] = 0;
+            RoundTimer.amountTimeElapsedPerOperator[i] = 0;
+        }
 
         string opers = returnOps();
         Debug.Log("RESTART: DIFFICULTY, " + ScoreManager.difficulty + ". MODE, " + ScoreManager.gameMode + ". OPERATORS, " + opers);

@@ -17,6 +17,8 @@ public class ButtonBehavior : MonoBehaviour{
 
     //Switch variable to determine which button has the right answer
     static public int correctButton = 0;
+    static public bool userAnswerIsCorrect = false;                 //Used in RoundTimer for marking user answers.
+    static public string problemOperator;
     public string[] answers = new string[] {"A","B","C","D"};
     public Button[] buttons;
 
@@ -44,17 +46,20 @@ public class ButtonBehavior : MonoBehaviour{
         
         if (string.Equals(buttonID, answers[correctButton])){
             Debug.Log("Right Answer");
-            ScoreManager.playerScore += RoundTimer.roundScore;
+            userAnswerIsCorrect = true;
             ScoreManager.numProblemsCorrect++; 
+            incrementOperator(ScoreManager.numProblemsCorrectPerOperator);
         }
         else {
             Debug.Log("Wrong Answer");
+            userAnswerIsCorrect = false;
             ScoreManager.playerLives--;
         }
 
         //Reduce the number of problems by 1 if the gameMode is set to "problems"
         ScoreManager.numProblems--;
         ScoreManager.numProblemsAnswered++;
+        incrementOperator(ScoreManager.numProblemsAnsweredPerOperator);
 
         //Pause the round timer.
         RoundTimer.timerState = "Reset";
@@ -69,7 +74,7 @@ public class ButtonBehavior : MonoBehaviour{
 
         int int1 = randomNum(ScoreManager.difficulty);  //Currently, difficulty only changes the number range
         int int2 = randomNum(ScoreManager.difficulty);
-        string problemOperator = operators[Random.Range(0,operators.Count)];
+        problemOperator = operators[Random.Range(0,operators.Count)];
         float ans = solveProb(int1, int2, problemOperator);
 
         //parentheses for negatives
@@ -81,19 +86,28 @@ public class ButtonBehavior : MonoBehaviour{
         //Update each of the 4 buttons randomly.
         correctButton = Random.Range(0,buttonTexts.Length);
         float[] takenAnswers = new float[buttonTexts.Length];
-        for(int i = 0;i < buttonTexts.Length;i++){
+        /*
+        for (int i = 0; i < buttonTexts.Length; i++){
+            if (i == correctButton)
+            {
+                takenAnswers[i] = ans;
+                buttonTexts[i].text = string.Equals(problemOperator, "/") ? ans.ToString("F3") : ans.ToString();
+            }
+            else
+            {
+                takenAnswers[i] = findWrongAns(ans, takenAnswers);
+                buttonTexts[i].text = string.Equals(problemOperator, "/") ? takenAnswers[i].ToString("F3") : takenAnswers[i].ToString();
+            }
+        }
+        */
+        for (int i = 0; i < buttonTexts.Length; i++){
             if (i == correctButton){
                 takenAnswers[i] = ans;
-                if (string.Equals(problemOperator,"/")) {
-                    buttonTexts[i].text = "" + ans.ToString("F3");
-                }
-                else {
-                    buttonTexts[i].text = "" + ans;
-                }
+                buttonTexts[i].text = ans.ToString("G");
             }
-            else {
+            else{
                 takenAnswers[i] = findWrongAns(ans, takenAnswers);
-                buttonTexts[i].text = "" + takenAnswers[i];
+                buttonTexts[i].text = takenAnswers[i].ToString("G");
             }
         }
 
@@ -187,5 +201,27 @@ public class ButtonBehavior : MonoBehaviour{
             return (ans + Random.Range(1,Mathf.Max(4,(int)ans/2)));
         }
         return (ans + Random.Range(Mathf.Min(-3,-(int)ans/2),-1));
+    }
+
+    //Helper Method: Increment one of the operator stats
+    //Takes in the operator list that it wants to implement.
+    private void incrementOperator(int[] operatorStatsList){
+        switch(problemOperator){
+            case "+":
+                operatorStatsList[0]++;
+                break;
+            case "-":
+                operatorStatsList[1]++;
+                break;
+            case "*":
+                operatorStatsList[2]++;
+                break;
+            case "/":
+                operatorStatsList[3]++;
+                break;
+            case "%":
+                operatorStatsList[4]++;
+                break;
+        }
     }
 }
