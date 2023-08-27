@@ -36,7 +36,7 @@ public class ScoreManager : MonoBehaviour {
         }
 
         if (string.Equals(gameMode, "problems") && numProblems == 0){
-            Debug.Log("You answered " + (numProblems) + " problems!");
+            Debug.Log("You answered " + (numProblemsAnswered) + " problems!");
 
             gameEnd();
         }

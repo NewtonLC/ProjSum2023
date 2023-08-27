@@ -4522,22 +4522,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 23011170291180e4db222e3e883ca07b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gameModes:
+  TMP_gameModes:
   - {fileID: 1652524836}
   - {fileID: 1372025396}
   - {fileID: 456667864}
   - {fileID: 346308721}
-  difficulties:
+  TMP_difficulties:
   - {fileID: 1470739669}
   - {fileID: 1801801917}
   - {fileID: 1840313039}
-  operators:
+  TMP_operators:
   - {fileID: 949177779}
   - {fileID: 1356376323}
   - {fileID: 391729122}
   - {fileID: 953301143}
   - {fileID: 258311670}
-  amounts:
+  TMP_amounts:
   - {fileID: 1476027600}
   - {fileID: 1127739878}
   - {fileID: 2113317938}

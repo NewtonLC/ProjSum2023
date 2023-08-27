@@ -13,6 +13,8 @@ public class ScoreScreenText : MonoBehaviour
     private const int NUM_OPERATORS = 5;
 
     //The line graph with dots going through it
+    public GameObject TimelineMarker;
+    public TMP_Text TimelineMarkerText;
     public GameObject AnswerDot;
     private SpriteRenderer answerDotSpriteRenderer;
     public Sprite correctDot;
@@ -62,13 +64,14 @@ public class ScoreScreenText : MonoBehaviour
         textTotalTimeSpentPerOperator.text = getTotalTimeSpentPerOperator();
         textAvgTimePerProblemPerOperator.text = getAvgTimePerProblemPerOperator();
 
-        Debug.Log("Problems answered: " + ScoreManager.numProblemsAnsweredPerOperator[0] + " " + ScoreManager.numProblemsAnsweredPerOperator[1] + " " + ScoreManager.numProblemsAnsweredPerOperator[2] + " " + ScoreManager.numProblemsAnsweredPerOperator[3] + " " + ScoreManager.numProblemsAnsweredPerOperator[4]);
-        Debug.Log("Problems correct: " + ScoreManager.numProblemsCorrectPerOperator[0] + " " + ScoreManager.numProblemsCorrectPerOperator[1] + " " + ScoreManager.numProblemsCorrectPerOperator[2] + " " + ScoreManager.numProblemsCorrectPerOperator[3] + " " + ScoreManager.numProblemsCorrectPerOperator[4]);
+        //Debug.Log("Problems answered: " + ScoreManager.numProblemsAnsweredPerOperator[0] + " " + ScoreManager.numProblemsAnsweredPerOperator[1] + " " + ScoreManager.numProblemsAnsweredPerOperator[2] + " " + ScoreManager.numProblemsAnsweredPerOperator[3] + " " + ScoreManager.numProblemsAnsweredPerOperator[4]);
+        //Debug.Log("Problems correct: " + ScoreManager.numProblemsCorrectPerOperator[0] + " " + ScoreManager.numProblemsCorrectPerOperator[1] + " " + ScoreManager.numProblemsCorrectPerOperator[2] + " " + ScoreManager.numProblemsCorrectPerOperator[3] + " " + ScoreManager.numProblemsCorrectPerOperator[4]);
 
-        Debug.Log("Time Spent: " + RoundTimer.amountTimeElapsed + " " + RoundTimer.amountTimeElapsedPerOperator[0] + " " + RoundTimer.amountTimeElapsedPerOperator[1] + " " + RoundTimer.amountTimeElapsedPerOperator[2] + " " + RoundTimer.amountTimeElapsedPerOperator[3] + " " + RoundTimer.amountTimeElapsedPerOperator[4]);
+        //Debug.Log("Time Spent: " + RoundTimer.amountTimeElapsed + " " + RoundTimer.amountTimeElapsedPerOperator[0] + " " + RoundTimer.amountTimeElapsedPerOperator[1] + " " + RoundTimer.amountTimeElapsedPerOperator[2] + " " + RoundTimer.amountTimeElapsedPerOperator[3] + " " + RoundTimer.amountTimeElapsedPerOperator[4]);
 
         displayLives();
 
+        markTimeLine();
         loadAnswerDots();
         //TODO: Add high score. you'll need to find a way to save the user's progress.
     }
@@ -102,7 +105,7 @@ public class ScoreScreenText : MonoBehaviour
 
     //Method: Gets the average amount of time spent on each problem
     private string getAvgTimePerProblem(){
-        string toReturn = (ScoreManager.numProblemsCorrect == 0)?"N/A":(getTotalTimeSpent() / ScoreManager.numProblemsCorrect).ToString("F2") + "|";
+        string toReturn = (ScoreManager.numProblemsCorrect == 0)?"N/A|":(getTotalTimeSpent() / ScoreManager.numProblemsCorrect).ToString("F2") + "|";
         toReturn += (ScoreManager.numProblemsAnswered == 0)?"N/A":(getTotalTimeSpent() / ScoreManager.numProblemsAnswered).ToString("F2") + "s";
         return toReturn;
     }
@@ -117,11 +120,21 @@ public class ScoreScreenText : MonoBehaviour
         }
     }
 
-    //Method that handles the text for all operators' accuracies
+    /*
     private string getNumProblemsAccuracyPerOperator(){
         string toReturn = "";
         for (int i = 0;i < NUM_OPERATORS;i++){
             toReturn += ScoreManager.numProblemsCorrectPerOperator[i] + "/" + ScoreManager.numProblemsAnsweredPerOperator[i] + "/" + getAccuracyForOperator(i) + "\n";
+        }
+        return toReturn;
+    }
+    */
+
+    //Method that handles the text for all operators' accuracies
+    private string getNumProblemsAccuracyPerOperator(){
+        string toReturn = "";
+        for (int i = 0;i < ButtonBehavior.activeOperators.Count;i++){
+            toReturn += ButtonBehavior.activeOperators[i] + ":\t" + ScoreManager.numProblemsCorrectPerOperator[getOperatorIndex(ButtonBehavior.activeOperators[i])] + "/" + ScoreManager.numProblemsAnsweredPerOperator[getOperatorIndex(ButtonBehavior.activeOperators[i])] + "/" + getAccuracyForOperator(getOperatorIndex(ButtonBehavior.activeOperators[i])) + "\n";
         }
         return toReturn;
     }
@@ -131,11 +144,29 @@ public class ScoreScreenText : MonoBehaviour
         return (ScoreManager.numProblemsAnsweredPerOperator[operatorNum] == 0)?"0%":(((float)ScoreManager.numProblemsCorrectPerOperator[operatorNum]/ScoreManager.numProblemsAnsweredPerOperator[operatorNum]) * 100).ToString("F0") + "%";
     }
 
+    //Helper Method that returns the index of a given operator
+    private int getOperatorIndex(string op){
+        switch(op){
+            case "+":
+                return 0;
+            case "-":
+                return 1;
+            case "*":
+                return 2;
+            case "/":
+                return 3;
+            case "%":
+                return 4;
+        }
+        return -1;
+    }
+
     //Method that handles the text for all operators' problems per minute
     private string getNumProblemsPerMinutePerOperator(){
         string toReturn = "";
-        for (int i = 0;i < NUM_OPERATORS;i++){
-            toReturn += (ScoreManager.numProblemsCorrectPerOperator[i] * ((float)60 / getTotalTimeSpentForOperator(i))).ToString("F0") + "|" + (ScoreManager.numProblemsAnsweredPerOperator[i] * ((float)60 / getTotalTimeSpentForOperator(i))).ToString("F0") + "\n";
+        for (int i = 0;i < ButtonBehavior.activeOperators.Count;i++){
+            //if operator was found in the game
+            toReturn += ButtonBehavior.activeOperators[i] + ":\t" + (ScoreManager.numProblemsCorrectPerOperator[getOperatorIndex(ButtonBehavior.activeOperators[i])] * ((float)60 / getTotalTimeSpentForOperator(getOperatorIndex(ButtonBehavior.activeOperators[i])))).ToString("F0") + "|" + (ScoreManager.numProblemsAnsweredPerOperator[getOperatorIndex(ButtonBehavior.activeOperators[i])] * ((float)60 / getTotalTimeSpentForOperator(getOperatorIndex(ButtonBehavior.activeOperators[i])))).ToString("F0") + "\n";
         }
         return toReturn;
     }
@@ -143,9 +174,10 @@ public class ScoreScreenText : MonoBehaviour
     //Method that handles text for all operators' avg time per problem
     private string getAvgTimePerProblemPerOperator(){
         string toReturn = "";
-        for (int i = 0;i < NUM_OPERATORS;i++){
-            toReturn += (ScoreManager.numProblemsCorrectPerOperator[i] == 0)?"N/A|":(getTotalTimeSpentForOperator(i) / ScoreManager.numProblemsCorrectPerOperator[i]).ToString("F2") + "|";
-            toReturn += (ScoreManager.numProblemsAnsweredPerOperator[i] == 0)?"N/A\n":(getTotalTimeSpentForOperator(i) / ScoreManager.numProblemsAnsweredPerOperator[i]).ToString("F2") + "s\n";
+        for (int i = 0;i < ButtonBehavior.activeOperators.Count;i++){
+            toReturn += ButtonBehavior.activeOperators[i] + ":\t";
+            toReturn += (ScoreManager.numProblemsCorrectPerOperator[getOperatorIndex(ButtonBehavior.activeOperators[i])] == 0)?"N/A|":(getTotalTimeSpentForOperator(getOperatorIndex(ButtonBehavior.activeOperators[i])) / ScoreManager.numProblemsCorrectPerOperator[getOperatorIndex(ButtonBehavior.activeOperators[i])]).ToString("F2") + "|";
+            toReturn += (ScoreManager.numProblemsAnsweredPerOperator[getOperatorIndex(ButtonBehavior.activeOperators[i])] == 0)?"N/A\n":(getTotalTimeSpentForOperator(getOperatorIndex(ButtonBehavior.activeOperators[i])) / ScoreManager.numProblemsAnsweredPerOperator[getOperatorIndex(ButtonBehavior.activeOperators[i])]).ToString("F2") + "s\n";
         }
         return toReturn;
     }
@@ -159,8 +191,8 @@ public class ScoreScreenText : MonoBehaviour
     //Method that handles the text for all operators' elapsed times
     private string getTotalTimeSpentPerOperator(){
         string toReturn = "";
-        for (int i = 0;i < NUM_OPERATORS;i++){
-            toReturn += getTotalTimeSpentForOperator(i).ToString("F2") + "\n";
+        for (int i = 0;i < ButtonBehavior.activeOperators.Count;i++){
+            toReturn += ButtonBehavior.activeOperators[i] + ":\t" + getTotalTimeSpentForOperator(getOperatorIndex(ButtonBehavior.activeOperators[i])).ToString("F2") + "\n";
         }
         return toReturn;
     }
@@ -185,10 +217,32 @@ public class ScoreScreenText : MonoBehaviour
         }
     }
 
+    //Every MARK_TIME seconds, spawn a mark at that point. The mark should have text along with it that tells the time.
+    //Then, put a markerTextObject where the start and end are.
+    private const float MARK_TIME = 10;
+    private const float LINE_Y_POSITION = -1.7f;
+    private void markTimeLine(){
+        for (float i = MARK_TIME;i < getTotalTimeSpent()*0.90f;i += MARK_TIME){
+            float xPos = findXPos(i);
+            Vector3 SpawnPos = new Vector3(xPos, LINE_Y_POSITION, 0);
+            GameObject markerObject = Instantiate(TimelineMarker, SpawnPos, Quaternion.identity);
+            SpawnPos = new Vector3(xPos, LINE_Y_POSITION-1, 0);
+            TMP_Text markerTextObject = Instantiate(TimelineMarkerText, SpawnPos, Quaternion.identity);
+            markerTextObject.text = "" + i;
+        }
+        Vector3 BeginningSpawnPos = new Vector3(findXPos(0), LINE_Y_POSITION-1, 0);
+        TMP_Text BeginningMarkerTextObject = Instantiate(TimelineMarkerText, BeginningSpawnPos, Quaternion.identity);
+        BeginningMarkerTextObject.text = "0";
+        
+        Vector3 EndingSpawnPos = new Vector3(findXPos(RoundTimer.amountTimeElapsed), LINE_Y_POSITION-1, 0);
+        TMP_Text EndingMarkerTextObject = Instantiate(TimelineMarkerText, EndingSpawnPos, Quaternion.identity);
+        EndingMarkerTextObject.text = getTotalTimeSpent().ToString("F2");
+        
+    }
+
     //Helper Method that locates the x position of the AnswerDot.
-    private const float LINE_LENGTH = 5.14f;
+    private const float LINE_LENGTH = 4.9f;
     private float findXPos(float answerTime){
-        Debug.Log("Answer Time: " + answerTime + ". Time elapsed: " + RoundTimer.amountTimeElapsed + ". Percentage: " + (answerTime/RoundTimer.amountTimeElapsed));
         return ((Mathf.Abs(answerTime)/RoundTimer.amountTimeElapsed) * LINE_LENGTH - (LINE_LENGTH/2));
     }
         //The times of when the user answered must be kept track of in a List somewhere, probably in ScoreManager.

@@ -13,7 +13,18 @@ public class ButtonBehavior : MonoBehaviour{
     public TMP_Text[] buttonTexts;
 
     //List of operators
-    static public List<string> operators = new List<string>();
+    //static public List<string> operators = new List<string>();
+
+
+    static public Dictionary<string, bool> operators = new Dictionary<string, bool>(){
+	    {"+", false},
+        {"-", false},
+        {"*", false},
+        {"/", false},
+        {"%", false},
+    };
+
+    static public List<string> activeOperators = operators.Where(kv => kv.Value).Select(kv => kv.Key).ToList();
 
     //Switch variable to determine which button has the right answer
     static public int correctButton = 0;
@@ -67,15 +78,32 @@ public class ButtonBehavior : MonoBehaviour{
 
     //Method: Create a new mathematical problem and update the buttons.
     public void newProblem(){
-        if (operators.Count == 0){      //If no operators are selected, clear the field.
-            clearField();
-            return;
-        }
-
         int int1 = randomNum(ScoreManager.difficulty);  //Currently, difficulty only changes the number range
         int int2 = randomNum(ScoreManager.difficulty);
-        problemOperator = operators[Random.Range(0,operators.Count)];
+        //problemOperator = operators[Random.Range(0,operators.Count)].Key;
+
+        //TESTING
+
+        // Check if there are active operators
+        if (activeOperators.Count > 0)
+        {
+            // Step 2: Generate a random index within the range of active operators
+            int randomIndex = Random.Range(0, activeOperators.Count);
+
+            // Step 3: Retrieve the randomly selected active operator
+            problemOperator = activeOperators[randomIndex];
+
+            Debug.Log("Randomly selected active operator: " + problemOperator);
+        }
+        else
+        {
+            Debug.Log("No active operators in the game.");
+        }
+
+        //TESTING
+
         float ans = solveProb(int1, int2, problemOperator);
+        Debug.Log(ans);
 
         //parentheses for negatives
         textProb.text = int1<0?"(" + int1 + ")":int1.ToString();

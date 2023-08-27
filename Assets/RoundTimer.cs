@@ -54,7 +54,7 @@ public class RoundTimer : MonoBehaviour
 
     //Method that increments time by one tick
     private void incrementTime(){
-        amountTimeElapsed += Time.deltaTime;
+        amountTimeElapsed += Time.deltaTime*5;
         switch(ButtonBehavior.problemOperator){
             case "+":
                 amountTimeElapsedPerOperator[0] += Time.deltaTime;
