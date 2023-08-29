@@ -55,10 +55,10 @@ public class ScoreScreenText : MonoBehaviour
 
     //Display User's score, remaining lives(if applicable), and Life multiplier(if applicable), and User's final score(if applicable)
     void displayStats(){
-        textNumProblemsAccuracy.text += " " + ScoreManager.numProblemsCorrect + "/" + ScoreManager.numProblemsAnswered + "/" + getAccuracy();
-        textNumProblemsPerMinute.text += getNumProblemsPerMinute();
-        textAvgTimePerProblem.text += getAvgTimePerProblem();
-        textTotalTimeSpent.text += getTotalTimeSpent().ToString("F2") + "s";
+        textNumProblemsAccuracy.text += "\n" + ScoreManager.numProblemsCorrect + "/" + ScoreManager.numProblemsAnswered + "/" + getAccuracy();
+        textNumProblemsPerMinute.text += "\n" + getNumProblemsPerMinute();
+        textAvgTimePerProblem.text += "\n" + getAvgTimePerProblem();
+        textTotalTimeSpent.text += "\n" + getTotalTimeSpent().ToString("F2") + "s";
         textNumProblemsAccuracyPerOperator.text = getNumProblemsAccuracyPerOperator();
         textNumProblemsPerMinutePerOperator.text = getNumProblemsPerMinutePerOperator();
         textTotalTimeSpentPerOperator.text = getTotalTimeSpentPerOperator();
@@ -208,11 +208,11 @@ public class ScoreScreenText : MonoBehaviour
         for (int i = 0;i < RoundTimer.AnswerTimes.Count;i++){
             if (RoundTimer.AnswerTimes[i] > 0){                 //Correct answer
                 answerDotSpriteRenderer.sprite = correctDot;
-                yPos = -1.15f;
+                yPos = LINE_Y_POSITION + 0.55f;
             }
             else {                                              //Incorrect answer
                 answerDotSpriteRenderer.sprite = incorrectDot;
-                yPos = -2.25f;
+                yPos = LINE_Y_POSITION - 0.55f;
             }
             xPos = findXPos(RoundTimer.AnswerTimes[i]);
             Vector3 SpawnPos = new Vector3(xPos, yPos, 0);
@@ -224,7 +224,9 @@ public class ScoreScreenText : MonoBehaviour
     //Every MARK_TIME seconds, spawn a mark at that point. The mark should have text along with it that tells the time.
     //Then, put a markerTextObject where the start and end are.
     private const float MARK_TIME = 10;
-    private const float LINE_Y_POSITION = -1.7f;
+    //Line Y position is -2.231, but for some reason objects spawned 0.097 higher than they were supposed to?
+    private const float LINE_Y_POSITION = -2.328f;
+    private const float LINE_X_POSITION = -0.485f;
     private void markTimeLine(){
         for (float i = MARK_TIME;i < getTotalTimeSpent()*0.90f;i += MARK_TIME){
             float xPos = findXPos(i);
@@ -245,13 +247,13 @@ public class ScoreScreenText : MonoBehaviour
     }
 
     //Helper Method that locates the x position of the AnswerDot.
-    private const float LINE_LENGTH = 4.9f;
+    private const float LINE_LENGTH = 3.27f;
     private float findXPos(float answerTime){
-        return ((Mathf.Abs(answerTime)/RoundTimer.amountTimeElapsed) * LINE_LENGTH - (LINE_LENGTH/2));
+        return ((Mathf.Abs(answerTime)/RoundTimer.amountTimeElapsed) * LINE_LENGTH - (LINE_LENGTH/2)) + LINE_X_POSITION;
     }
 
     //Method that spaces the bottom text objects depending on how many operators were used.
-    private const int TEXT_HEIGHT = 15;
+    private const int TEXT_HEIGHT = 23;
     public List<TMP_Text> lowerTexts = new List<TMP_Text>();
     private void spaceText(){
         for (int i = 0;i < lowerTexts.Count;i++){
