@@ -1361,6 +1361,11 @@ MonoBehaviour:
   twoLives: {fileID: 1551092228, guid: c8301618eda5c15469768a7545a60421, type: 3}
   oneLife: {fileID: 96282343, guid: c8301618eda5c15469768a7545a60421, type: 3}
   zeroLives: {fileID: 1100047209, guid: c8301618eda5c15469768a7545a60421, type: 3}
+  lowerTexts:
+  - {fileID: 1612947368}
+  - {fileID: 757719452}
+  - {fileID: 1999492921}
+  - {fileID: 33603550}
 --- !u!114 &525426947
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5474,8 +5479,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -70, y: 210}
-  m_SizeDelta: {x: 95, y: 25}
+  m_AnchoredPosition: {x: -55, y: 210}
+  m_SizeDelta: {x: 125, y: 25}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1532067571
 MonoBehaviour:

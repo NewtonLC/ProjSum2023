@@ -64,6 +64,8 @@ public class ScoreScreenText : MonoBehaviour
         textTotalTimeSpentPerOperator.text = getTotalTimeSpentPerOperator();
         textAvgTimePerProblemPerOperator.text = getAvgTimePerProblemPerOperator();
 
+        spaceText();
+
         //Debug.Log("Problems answered: " + ScoreManager.numProblemsAnsweredPerOperator[0] + " " + ScoreManager.numProblemsAnsweredPerOperator[1] + " " + ScoreManager.numProblemsAnsweredPerOperator[2] + " " + ScoreManager.numProblemsAnsweredPerOperator[3] + " " + ScoreManager.numProblemsAnsweredPerOperator[4]);
         //Debug.Log("Problems correct: " + ScoreManager.numProblemsCorrectPerOperator[0] + " " + ScoreManager.numProblemsCorrectPerOperator[1] + " " + ScoreManager.numProblemsCorrectPerOperator[2] + " " + ScoreManager.numProblemsCorrectPerOperator[3] + " " + ScoreManager.numProblemsCorrectPerOperator[4]);
 
@@ -120,18 +122,11 @@ public class ScoreScreenText : MonoBehaviour
         }
     }
 
-    /*
-    private string getNumProblemsAccuracyPerOperator(){
-        string toReturn = "";
-        for (int i = 0;i < NUM_OPERATORS;i++){
-            toReturn += ScoreManager.numProblemsCorrectPerOperator[i] + "/" + ScoreManager.numProblemsAnsweredPerOperator[i] + "/" + getAccuracyForOperator(i) + "\n";
-        }
-        return toReturn;
-    }
-    */
-
     //Method that handles the text for all operators' accuracies
     private string getNumProblemsAccuracyPerOperator(){
+        if (ButtonBehavior.activeOperators.Count == 1){
+            return "";
+        }
         string toReturn = "";
         for (int i = 0;i < ButtonBehavior.activeOperators.Count;i++){
             toReturn += ButtonBehavior.activeOperators[i] + ":\t" + ScoreManager.numProblemsCorrectPerOperator[getOperatorIndex(ButtonBehavior.activeOperators[i])] + "/" + ScoreManager.numProblemsAnsweredPerOperator[getOperatorIndex(ButtonBehavior.activeOperators[i])] + "/" + getAccuracyForOperator(getOperatorIndex(ButtonBehavior.activeOperators[i])) + "\n";
@@ -163,6 +158,9 @@ public class ScoreScreenText : MonoBehaviour
 
     //Method that handles the text for all operators' problems per minute
     private string getNumProblemsPerMinutePerOperator(){
+        if (ButtonBehavior.activeOperators.Count == 1){
+            return "";
+        }
         string toReturn = "";
         for (int i = 0;i < ButtonBehavior.activeOperators.Count;i++){
             //if operator was found in the game
@@ -173,6 +171,9 @@ public class ScoreScreenText : MonoBehaviour
 
     //Method that handles text for all operators' avg time per problem
     private string getAvgTimePerProblemPerOperator(){
+        if (ButtonBehavior.activeOperators.Count == 1){
+            return "";
+        }
         string toReturn = "";
         for (int i = 0;i < ButtonBehavior.activeOperators.Count;i++){
             toReturn += ButtonBehavior.activeOperators[i] + ":\t";
@@ -190,6 +191,9 @@ public class ScoreScreenText : MonoBehaviour
 
     //Method that handles the text for all operators' elapsed times
     private string getTotalTimeSpentPerOperator(){
+        if (ButtonBehavior.activeOperators.Count == 1){
+            return "";
+        }
         string toReturn = "";
         for (int i = 0;i < ButtonBehavior.activeOperators.Count;i++){
             toReturn += ButtonBehavior.activeOperators[i] + ":\t" + getTotalTimeSpentForOperator(getOperatorIndex(ButtonBehavior.activeOperators[i])).ToString("F2") + "\n";
@@ -245,18 +249,21 @@ public class ScoreScreenText : MonoBehaviour
     private float findXPos(float answerTime){
         return ((Mathf.Abs(answerTime)/RoundTimer.amountTimeElapsed) * LINE_LENGTH - (LINE_LENGTH/2));
     }
-        //The times of when the user answered must be kept track of in a List somewhere, probably in ScoreManager.
-            //Each value in the float list will represent one answer, and the value of the float represents when the problem was answered.
-            //Correct answers will have be positive, while Incorrect answers will be negative.
-        //Loop for a number of times equal to the length of the List(number of problems answered, number of dots to process)
-            //For each loop, check if the answer is correct(Above 0) or incorrect(Below 0)
-                //If the answer is correct...
-                    //Set the AnswerDot to the first costume(green)
-                    //Set yPos to a number above the line
-                //If the answer is incorrect...
-                    //Set the AnswerDot tot he second costume(red)
-                    //Set yPos to a number below the line
-            //Then, set xPos to a number based on the percentage of the time that was elapsed.
-            //Then, create a Vector3 for the spawn position and instantiate the GameObject.
-            //GameObject answer = Instantiate(AnswerRing, SpawnPos, Quaternion.identity);
+
+    //Method that spaces the bottom text objects depending on how many operators were used.
+    private const int TEXT_HEIGHT = 15;
+    public List<TMP_Text> lowerTexts = new List<TMP_Text>();
+    private void spaceText(){
+        for (int i = 0;i < lowerTexts.Count;i++){
+            lowerTexts[i].GetComponent<RectTransform>().localPosition += new Vector3(0,getNumInactiveOperators() * TEXT_HEIGHT,0);
+            if (getNumInactiveOperators()==4){
+                lowerTexts[i].GetComponent<RectTransform>().localPosition += new Vector3(0,TEXT_HEIGHT,0);
+            }
+        }
+    }
+
+    //Helper method that returns the number of operators not used
+    private int getNumInactiveOperators(){
+        return (ButtonBehavior.operators.Count - ButtonBehavior.activeOperators.Count);
+    }
 }
