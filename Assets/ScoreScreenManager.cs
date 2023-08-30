@@ -93,6 +93,7 @@ public class ScoreScreenManager : MonoBehaviour
     //Method that changes the operators(and alters button states)
     public void changeOperators(string op){
         ButtonBehavior.operators[op] = !ButtonBehavior.operators[op];
+        loadActiveOperators();
         Debug.Log(returnOps());
     }
 

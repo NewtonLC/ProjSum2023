@@ -16,7 +16,7 @@ public class ScoreScreenText : MonoBehaviour
     public GameObject TimelineMarker;
     public TMP_Text TimelineMarkerText;
     public GameObject AnswerDot;
-    private SpriteRenderer answerDotSpriteRenderer;
+    private Image answerDotImageRenderer;
     public Sprite correctDot;
     public Sprite incorrectDot;
 
@@ -43,7 +43,7 @@ public class ScoreScreenText : MonoBehaviour
 
     void Start(){
         lifeDisplaySpriteRenderer = lifeDisplay.GetComponent<SpriteRenderer>();
-        answerDotSpriteRenderer = AnswerDot.GetComponent<SpriteRenderer>();
+        answerDotImageRenderer = AnswerDot.GetComponent<Image>();
     }
 
     void Update(){
@@ -64,7 +64,7 @@ public class ScoreScreenText : MonoBehaviour
         textTotalTimeSpentPerOperator.text = getTotalTimeSpentPerOperator();
         textAvgTimePerProblemPerOperator.text = getAvgTimePerProblemPerOperator();
 
-        spaceText();
+        shrinkText();
 
         //Debug.Log("Problems answered: " + ScoreManager.numProblemsAnsweredPerOperator[0] + " " + ScoreManager.numProblemsAnsweredPerOperator[1] + " " + ScoreManager.numProblemsAnsweredPerOperator[2] + " " + ScoreManager.numProblemsAnsweredPerOperator[3] + " " + ScoreManager.numProblemsAnsweredPerOperator[4]);
         //Debug.Log("Problems correct: " + ScoreManager.numProblemsCorrectPerOperator[0] + " " + ScoreManager.numProblemsCorrectPerOperator[1] + " " + ScoreManager.numProblemsCorrectPerOperator[2] + " " + ScoreManager.numProblemsCorrectPerOperator[3] + " " + ScoreManager.numProblemsCorrectPerOperator[4]);
@@ -129,7 +129,7 @@ public class ScoreScreenText : MonoBehaviour
         }
         string toReturn = "";
         for (int i = 0;i < ButtonBehavior.activeOperators.Count;i++){
-            toReturn += ButtonBehavior.activeOperators[i] + ":\t" + ScoreManager.numProblemsCorrectPerOperator[getOperatorIndex(ButtonBehavior.activeOperators[i])] + "/" + ScoreManager.numProblemsAnsweredPerOperator[getOperatorIndex(ButtonBehavior.activeOperators[i])] + "/" + getAccuracyForOperator(getOperatorIndex(ButtonBehavior.activeOperators[i])) + "\n";
+            toReturn += ButtonBehavior.activeOperators[i] + ":\t  " + ScoreManager.numProblemsCorrectPerOperator[getOperatorIndex(ButtonBehavior.activeOperators[i])] + "/" + ScoreManager.numProblemsAnsweredPerOperator[getOperatorIndex(ButtonBehavior.activeOperators[i])] + "/" + getAccuracyForOperator(getOperatorIndex(ButtonBehavior.activeOperators[i])) + "\n";
         }
         return toReturn;
     }
@@ -164,7 +164,7 @@ public class ScoreScreenText : MonoBehaviour
         string toReturn = "";
         for (int i = 0;i < ButtonBehavior.activeOperators.Count;i++){
             //if operator was found in the game
-            toReturn += ButtonBehavior.activeOperators[i] + ":\t" + (ScoreManager.numProblemsCorrectPerOperator[getOperatorIndex(ButtonBehavior.activeOperators[i])] * ((float)60 / getTotalTimeSpentForOperator(getOperatorIndex(ButtonBehavior.activeOperators[i])))).ToString("F0") + "|" + (ScoreManager.numProblemsAnsweredPerOperator[getOperatorIndex(ButtonBehavior.activeOperators[i])] * ((float)60 / getTotalTimeSpentForOperator(getOperatorIndex(ButtonBehavior.activeOperators[i])))).ToString("F0") + "\n";
+            toReturn += ButtonBehavior.activeOperators[i] + ":\t  " + (ScoreManager.numProblemsCorrectPerOperator[getOperatorIndex(ButtonBehavior.activeOperators[i])] * ((float)60 / getTotalTimeSpentForOperator(getOperatorIndex(ButtonBehavior.activeOperators[i])))).ToString("F0") + "|" + (ScoreManager.numProblemsAnsweredPerOperator[getOperatorIndex(ButtonBehavior.activeOperators[i])] * ((float)60 / getTotalTimeSpentForOperator(getOperatorIndex(ButtonBehavior.activeOperators[i])))).ToString("F0") + "\n";
         }
         return toReturn;
     }
@@ -196,23 +196,24 @@ public class ScoreScreenText : MonoBehaviour
         }
         string toReturn = "";
         for (int i = 0;i < ButtonBehavior.activeOperators.Count;i++){
-            toReturn += ButtonBehavior.activeOperators[i] + ":\t" + getTotalTimeSpentForOperator(getOperatorIndex(ButtonBehavior.activeOperators[i])).ToString("F2") + "\n";
+            toReturn += ButtonBehavior.activeOperators[i] + ":\t    " + getTotalTimeSpentForOperator(getOperatorIndex(ButtonBehavior.activeOperators[i])).ToString("F2") + "\n";
         }
         return toReturn;
     }
 
     //Method that loads the Answer Dots
+    private const int ANSWER_DOT_DISTANCE_FROM_LINE = 20;
     private void loadAnswerDots(){
         float yPos;
         float xPos;
         for (int i = 0;i < RoundTimer.AnswerTimes.Count;i++){
             if (RoundTimer.AnswerTimes[i] > 0){                 //Correct answer
-                answerDotSpriteRenderer.sprite = correctDot;
-                yPos = LINE_Y_POSITION + 0.55f;
+                answerDotImageRenderer.sprite = correctDot;
+                yPos = LINE_Y_POSITION + ANSWER_DOT_DISTANCE_FROM_LINE;
             }
             else {                                              //Incorrect answer
-                answerDotSpriteRenderer.sprite = incorrectDot;
-                yPos = LINE_Y_POSITION - 0.55f;
+                answerDotImageRenderer.sprite = incorrectDot;
+                yPos = LINE_Y_POSITION - ANSWER_DOT_DISTANCE_FROM_LINE;
             }
             xPos = findXPos(RoundTimer.AnswerTimes[i]);
             Vector3 SpawnPos = new Vector3(xPos, yPos, 0);
@@ -225,42 +226,40 @@ public class ScoreScreenText : MonoBehaviour
     //Then, put a markerTextObject where the start and end are.
     private const float MARK_TIME = 10;
     //Line Y position is -2.231, but for some reason objects spawned 0.097 higher than they were supposed to?
-    private const float LINE_Y_POSITION = -2.328f;
-    private const float LINE_X_POSITION = -0.485f;
+    private const float LINE_Y_POSITION = 120;
+    private const float LINE_X_POSITION = 0;
+    private const int TEXT_DISTANCE_FROM_LINE = 45;
     private void markTimeLine(){
-        for (float i = MARK_TIME;i < getTotalTimeSpent()*0.90f;i += MARK_TIME){
+        for (float i = MARK_TIME;i < getTotalTimeSpent()*0.90f;i += MARK_TIME){     //Change so that it starts at 10 seconds, but if 
             float xPos = findXPos(i);
             Vector3 SpawnPos = new Vector3(xPos, LINE_Y_POSITION, 0);
             GameObject markerObject = Instantiate(TimelineMarker, SpawnPos, Quaternion.identity);
-            SpawnPos = new Vector3(xPos, LINE_Y_POSITION-1, 0);
+            SpawnPos = new Vector3(xPos, LINE_Y_POSITION-TEXT_DISTANCE_FROM_LINE, 0);
             TMP_Text markerTextObject = Instantiate(TimelineMarkerText, SpawnPos, Quaternion.identity);
             markerTextObject.text = "" + i;
         }
-        Vector3 BeginningSpawnPos = new Vector3(findXPos(0), LINE_Y_POSITION-1, 0);
+        Vector3 BeginningSpawnPos = new Vector3(findXPos(0), LINE_Y_POSITION-TEXT_DISTANCE_FROM_LINE, 0);
         TMP_Text BeginningMarkerTextObject = Instantiate(TimelineMarkerText, BeginningSpawnPos, Quaternion.identity);
         BeginningMarkerTextObject.text = "0";
         
-        Vector3 EndingSpawnPos = new Vector3(findXPos(RoundTimer.amountTimeElapsed), LINE_Y_POSITION-1, 0);
+        Vector3 EndingSpawnPos = new Vector3(findXPos(RoundTimer.amountTimeElapsed), LINE_Y_POSITION-TEXT_DISTANCE_FROM_LINE, 0);
         TMP_Text EndingMarkerTextObject = Instantiate(TimelineMarkerText, EndingSpawnPos, Quaternion.identity);
         EndingMarkerTextObject.text = getTotalTimeSpent().ToString("F2");
         
     }
 
     //Helper Method that locates the x position of the AnswerDot.
-    private const float LINE_LENGTH = 3.27f;
+    private const float LINE_LENGTH = 168;
     private float findXPos(float answerTime){
         return ((Mathf.Abs(answerTime)/RoundTimer.amountTimeElapsed) * LINE_LENGTH - (LINE_LENGTH/2)) + LINE_X_POSITION;
     }
 
     //Method that spaces the bottom text objects depending on how many operators were used.
     private const int TEXT_HEIGHT = 23;
-    public List<TMP_Text> lowerTexts = new List<TMP_Text>();
-    private void spaceText(){
-        for (int i = 0;i < lowerTexts.Count;i++){
-            lowerTexts[i].GetComponent<RectTransform>().localPosition += new Vector3(0,getNumInactiveOperators() * TEXT_HEIGHT,0);
-            if (getNumInactiveOperators()==4){
-                lowerTexts[i].GetComponent<RectTransform>().localPosition += new Vector3(0,TEXT_HEIGHT,0);
-            }
+    public List<TMP_Text> textsToShrink = new List<TMP_Text>();
+    private void shrinkText(){
+        for (int i = 0;i < textsToShrink.Count;i++){
+            textsToShrink[i].GetComponent<RectTransform>().sizeDelta -= new Vector2(0,getNumInactiveOperators() * TEXT_HEIGHT);
         }
     }
 

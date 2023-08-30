@@ -12,7 +12,7 @@ public class TimelineText : MonoBehaviour
     // Transform the text so it is regular size.
     void Start()
     {
-        gameObject.transform.SetParent(scrollerContent.transform, true);
+        gameObject.transform.SetParent(scrollerContent.transform, false);
         gameObject.transform.localScale = new Vector3(numScale,numScale,numScale);
     }
 }
