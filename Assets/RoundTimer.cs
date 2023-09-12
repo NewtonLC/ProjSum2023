@@ -13,6 +13,8 @@ public class RoundTimer : MonoBehaviour
     //Variables that hold important numbers
     static public float amountTimeElapsed = 0;
     static public float[] amountTimeElapsedPerOperator = new float[] {0,0,0,0,0};
+    static public float currentProblemTimeElapsed = 0;
+    public const int TIME_MULTIPLIER = 5;
 
     //List of the times of each user answer. This will be used in creating the AnswerDots for the line graph at the end.
     static public List<float> AnswerTimes = new List<float>();
@@ -38,6 +40,7 @@ public class RoundTimer : MonoBehaviour
         if (string.Equals(timerState, "Reset")){
             revealAnswers();
             markAnswerTime();
+            currentProblemTimeElapsed = 0;
             ButtonBehavior.resetProb = true;    //Switch variable to call newProblem() in ButtonBehavior script
             timerState = "Ticking";
         }
@@ -54,22 +57,23 @@ public class RoundTimer : MonoBehaviour
 
     //Method that increments time by one tick
     private void incrementTime(){
-        amountTimeElapsed += Time.deltaTime*5;
+        amountTimeElapsed += Time.deltaTime*TIME_MULTIPLIER;
+        currentProblemTimeElapsed +=  Time.deltaTime*TIME_MULTIPLIER;
         switch(ButtonBehavior.problemOperator){
             case "+":
-                amountTimeElapsedPerOperator[0] += Time.deltaTime;
+                amountTimeElapsedPerOperator[0] += Time.deltaTime*TIME_MULTIPLIER;
                 break;
             case "-":
-                amountTimeElapsedPerOperator[1] += Time.deltaTime;
+                amountTimeElapsedPerOperator[1] += Time.deltaTime*TIME_MULTIPLIER;
                 break;
             case "*":
-                amountTimeElapsedPerOperator[2] += Time.deltaTime;
+                amountTimeElapsedPerOperator[2] += Time.deltaTime*TIME_MULTIPLIER;
                 break;
             case "/":
-                amountTimeElapsedPerOperator[3] += Time.deltaTime;
+                amountTimeElapsedPerOperator[3] += Time.deltaTime*TIME_MULTIPLIER;
                 break;
             case "%":
-                amountTimeElapsedPerOperator[4] += Time.deltaTime;
+                amountTimeElapsedPerOperator[4] += Time.deltaTime*TIME_MULTIPLIER;
                 break;
         }
     }

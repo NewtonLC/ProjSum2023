@@ -39,7 +39,6 @@ public class ScoreScreenManager : MonoBehaviour
     //Method that returns to main menu
     public void toMainMenu(){
         SceneManager.LoadScene("MainMenuScreen");
-        Debug.Log(ScoreManager.gameMode);
         enterMainMenu = true;
     }
 
@@ -61,7 +60,9 @@ public class ScoreScreenManager : MonoBehaviour
         ScoreManager.numProblemsAnswered = 0;
         ScoreManager.numProblemsCorrect = 0;
         RoundTimer.amountTimeElapsed = 0;
+        RoundTimer.currentProblemTimeElapsed = 0;
         RoundTimer.AnswerTimes.Clear();
+        savedata.Instance.gameStart();
 
         for (int i = 0;i < NUM_OPERATORS;i++){
             ScoreManager.numProblemsAnsweredPerOperator[i] = 0;
@@ -255,7 +256,6 @@ public class ScoreScreenManager : MonoBehaviour
         for (int i = 0;i < amountButtons.Length;i++){
             amountButtons[i].gameObject.SetActive(true);
             TMP_amounts[i].text = amoList[i].ToString();
-            Debug.Log(amoList[i].ToString());
         }
     }
 }

@@ -6,6 +6,9 @@ using UnityEngine.SceneManagement;
 using TMPro;
 
 public class ScoreManager : MonoBehaviour {
+    //Savedata script
+    savedata savedataScript;
+
     //Static variables to hold the player's stats and information
     static public int numProblemsAnswered;
     static public int[] numProblemsAnsweredPerOperator = new int[] {0,0,0,0,0};
@@ -22,6 +25,10 @@ public class ScoreManager : MonoBehaviour {
 
     //Text to display player's lives. This will only display on "Survival" mode
     public TMP_Text livesDisplay;
+
+    void Start(){
+        savedataScript = GameObject.FindGameObjectWithTag("SaveData").GetComponent<savedata>();
+    }
 
     // Update is called once per frame
     void Update() {
@@ -76,6 +83,8 @@ public class ScoreManager : MonoBehaviour {
         // Player answers all necessary questions
     void gameEnd(){
         //Load the Score Screen scene
+        //savedataScript.gameEnd();
+        savedata.Instance.gameEnd();
         SceneManager.LoadScene("ScoreScreen");
         ScoreScreenText.gameOver = true;
         ScoreScreenManager.enterScoreMenu = true;

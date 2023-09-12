@@ -12,9 +12,7 @@ public class ButtonBehavior : MonoBehaviour{
     public TMP_Text textProb;
     public TMP_Text[] buttonTexts;
 
-    //List of operators
-    //static public List<string> operators = new List<string>();
-
+    savedata savedataScript;
 
     static public Dictionary<string, bool> operators = new Dictionary<string, bool>(){
 	    {"+", false},
@@ -30,7 +28,13 @@ public class ButtonBehavior : MonoBehaviour{
     static public int correctButton = 0;
     static public bool userAnswerIsCorrect = false;                 //Used in RoundTimer for marking user answers.
     static public string problemOperator;
-    public string[] answers = new string[] {"A","B","C","D"};
+    public Dictionary<string, float> answers = new Dictionary<string, float>()
+    {
+        {"A", 0},
+        {"B", 0},
+        {"C", 0},
+        {"D", 0}
+    };
     public Button[] buttons;
 
     //Variables to determine the range of numbers that get displayed
@@ -45,6 +49,8 @@ public class ButtonBehavior : MonoBehaviour{
     // Start is called before the first frame update
     void Start(){
         newProblem();
+
+        savedataScript = GameObject.FindGameObjectWithTag("SaveData").GetComponent<savedata>();
     }
 
     void Update(){
@@ -55,7 +61,7 @@ public class ButtonBehavior : MonoBehaviour{
 
     public void userAnswer(string buttonID){
         
-        if (string.Equals(buttonID, answers[correctButton])){
+        if (string.Equals(buttonID, answers.ElementAt(correctButton).Key)){
             Debug.Log("Right Answer");
             userAnswerIsCorrect = true;
             ScoreManager.numProblemsCorrect++; 
@@ -72,6 +78,10 @@ public class ButtonBehavior : MonoBehaviour{
         ScoreManager.numProblemsAnswered++;
         incrementOperator(ScoreManager.numProblemsAnsweredPerOperator);
 
+        Debug.Log(textProb.text + " ||| " + answers[buttonID] + " ||| " + userAnswerIsCorrect + " ||| " + RoundTimer.currentProblemTimeElapsed);
+
+        savedata.Instance.answerProblem(textProb.text, problemOperator, answers[buttonID], userAnswerIsCorrect, RoundTimer.currentProblemTimeElapsed);
+
         //Pause the round timer.
         RoundTimer.timerState = "Reset";
     }
@@ -81,8 +91,6 @@ public class ButtonBehavior : MonoBehaviour{
         int int1 = randomNum(ScoreManager.difficulty);  //Currently, difficulty only changes the number range
         int int2 = randomNum(ScoreManager.difficulty);
         //problemOperator = operators[Random.Range(0,operators.Count)].Key;
-
-        //TESTING
 
         // Check if there are active operators
         if (activeOperators.Count > 0)
@@ -100,10 +108,7 @@ public class ButtonBehavior : MonoBehaviour{
             Debug.Log("No active operators in the game.");
         }
 
-        //TESTING
-
         float ans = solveProb(int1, int2, problemOperator);
-        Debug.Log(ans);
 
         //parentheses for negatives
         textProb.text = int1<0?"(" + int1 + ")":int1.ToString();
@@ -114,27 +119,16 @@ public class ButtonBehavior : MonoBehaviour{
         //Update each of the 4 buttons randomly.
         correctButton = Random.Range(0,buttonTexts.Length);
         float[] takenAnswers = new float[buttonTexts.Length];
-        /*
-        for (int i = 0; i < buttonTexts.Length; i++){
-            if (i == correctButton)
-            {
-                takenAnswers[i] = ans;
-                buttonTexts[i].text = string.Equals(problemOperator, "/") ? ans.ToString("F3") : ans.ToString();
-            }
-            else
-            {
-                takenAnswers[i] = findWrongAns(ans, takenAnswers);
-                buttonTexts[i].text = string.Equals(problemOperator, "/") ? takenAnswers[i].ToString("F3") : takenAnswers[i].ToString();
-            }
-        }
-        */
+
         for (int i = 0; i < buttonTexts.Length; i++){
             if (i == correctButton){
                 takenAnswers[i] = ans;
+                answers[answers.ElementAt(i).Key] = ans;
                 buttonTexts[i].text = ans.ToString("G");
             }
             else{
                 takenAnswers[i] = findWrongAns(ans, takenAnswers);
+                answers[answers.ElementAt(i).Key] = takenAnswers[i];
                 buttonTexts[i].text = takenAnswers[i].ToString("G");
             }
         }

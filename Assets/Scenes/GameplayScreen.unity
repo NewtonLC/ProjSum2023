@@ -566,7 +566,6 @@ GameObject:
   - component: {fileID: 550427885}
   - component: {fileID: 550427884}
   - component: {fileID: 550427888}
-  - component: {fileID: 550427889}
   - component: {fileID: 550427891}
   - component: {fileID: 550427890}
   m_Layer: 5
@@ -688,44 +687,11 @@ MonoBehaviour:
   - {fileID: 1056829847}
   - {fileID: 1575484870}
   - {fileID: 440342542}
-  answers:
-  - A
-  - B
-  - C
-  - D
   buttons:
   - {fileID: 789865023}
   - {fileID: 1988881788}
   - {fileID: 1549825385}
   - {fileID: 1477580184}
---- !u!114 &550427889
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 550427883}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3b7a249ef98519e4c83fa84ca26f72c5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  offColor:
-    r: 1
-    g: 0
-    b: 0
-    a: 1
-  onColor:
-    r: 0
-    g: 1
-    b: 0
-    a: 1
-  plusOp: {fileID: 0}
-  minusOp: {fileID: 0}
-  multiplyOp: {fileID: 0}
-  easyDiff: {fileID: 0}
-  mediumDiff: {fileID: 0}
-  hardDiff: {fileID: 0}
 --- !u!114 &550427890
 MonoBehaviour:
   m_ObjectHideFlags: 0
