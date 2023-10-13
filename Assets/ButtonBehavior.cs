@@ -12,12 +12,29 @@ public class ButtonBehavior : MonoBehaviour{
     public TMP_Text textProb;
     public TMP_Text[] buttonTexts;
 
-    //List of operators
-    static public List<string> operators = new List<string>();
+    savedata savedataScript;
+
+    static public Dictionary<string, bool> operators = new Dictionary<string, bool>(){
+	    {"+", false},
+        {"-", false},
+        {"*", false},
+        {"/", false},
+        {"%", false},
+    };
+
+    static public List<string> activeOperators = operators.Where(kv => kv.Value).Select(kv => kv.Key).ToList();
 
     //Switch variable to determine which button has the right answer
     static public int correctButton = 0;
-    public string[] answers = new string[] {"A","B","C","D"};
+    static public bool userAnswerIsCorrect = false;                 //Used in RoundTimer for marking user answers.
+    static public string problemOperator;
+    public Dictionary<string, float> answers = new Dictionary<string, float>()
+    {
+        {"A", 0},
+        {"B", 0},
+        {"C", 0},
+        {"D", 0}
+    };
     public Button[] buttons;
 
     //Variables to determine the range of numbers that get displayed
@@ -32,6 +49,8 @@ public class ButtonBehavior : MonoBehaviour{
     // Start is called before the first frame update
     void Start(){
         newProblem();
+
+        savedataScript = GameObject.FindGameObjectWithTag("SaveData").GetComponent<savedata>();
     }
 
     void Update(){
@@ -42,19 +61,26 @@ public class ButtonBehavior : MonoBehaviour{
 
     public void userAnswer(string buttonID){
         
-        if (string.Equals(buttonID, answers[correctButton])){
+        if (string.Equals(buttonID, answers.ElementAt(correctButton).Key)){
             Debug.Log("Right Answer");
-            ScoreManager.playerScore += RoundTimer.roundScore;
+            userAnswerIsCorrect = true;
             ScoreManager.numProblemsCorrect++; 
+            incrementOperator(ScoreManager.numProblemsCorrectPerOperator);
         }
         else {
             Debug.Log("Wrong Answer");
+            userAnswerIsCorrect = false;
             ScoreManager.playerLives--;
         }
 
         //Reduce the number of problems by 1 if the gameMode is set to "problems"
         ScoreManager.numProblems--;
         ScoreManager.numProblemsAnswered++;
+        incrementOperator(ScoreManager.numProblemsAnsweredPerOperator);
+
+        Debug.Log(textProb.text + " ||| " + answers[buttonID] + " ||| " + userAnswerIsCorrect + " ||| " + RoundTimer.currentProblemTimeElapsed);
+
+        savedata.Instance.answerProblem(textProb.text, problemOperator, answers[buttonID], userAnswerIsCorrect, RoundTimer.currentProblemTimeElapsed);
 
         //Pause the round timer.
         RoundTimer.timerState = "Reset";
@@ -62,14 +88,26 @@ public class ButtonBehavior : MonoBehaviour{
 
     //Method: Create a new mathematical problem and update the buttons.
     public void newProblem(){
-        if (operators.Count == 0){      //If no operators are selected, clear the field.
-            clearField();
-            return;
-        }
-
         int int1 = randomNum(ScoreManager.difficulty);  //Currently, difficulty only changes the number range
         int int2 = randomNum(ScoreManager.difficulty);
-        string problemOperator = operators[Random.Range(0,operators.Count)];
+        //problemOperator = operators[Random.Range(0,operators.Count)].Key;
+
+        // Check if there are active operators
+        if (activeOperators.Count > 0)
+        {
+            // Step 2: Generate a random index within the range of active operators
+            int randomIndex = Random.Range(0, activeOperators.Count);
+
+            // Step 3: Retrieve the randomly selected active operator
+            problemOperator = activeOperators[randomIndex];
+
+            Debug.Log("Randomly selected active operator: " + problemOperator);
+        }
+        else
+        {
+            Debug.Log("No active operators in the game.");
+        }
+
         float ans = solveProb(int1, int2, problemOperator);
 
         //parentheses for negatives
@@ -81,19 +119,17 @@ public class ButtonBehavior : MonoBehaviour{
         //Update each of the 4 buttons randomly.
         correctButton = Random.Range(0,buttonTexts.Length);
         float[] takenAnswers = new float[buttonTexts.Length];
-        for(int i = 0;i < buttonTexts.Length;i++){
+
+        for (int i = 0; i < buttonTexts.Length; i++){
             if (i == correctButton){
                 takenAnswers[i] = ans;
-                if (string.Equals(problemOperator,"/")) {
-                    buttonTexts[i].text = "" + ans.ToString("F3");
-                }
-                else {
-                    buttonTexts[i].text = "" + ans;
-                }
+                answers[answers.ElementAt(i).Key] = ans;
+                buttonTexts[i].text = ans.ToString("G");
             }
-            else {
+            else{
                 takenAnswers[i] = findWrongAns(ans, takenAnswers);
-                buttonTexts[i].text = "" + takenAnswers[i];
+                answers[answers.ElementAt(i).Key] = takenAnswers[i];
+                buttonTexts[i].text = takenAnswers[i].ToString("G");
             }
         }
 
@@ -187,5 +223,27 @@ public class ButtonBehavior : MonoBehaviour{
             return (ans + Random.Range(1,Mathf.Max(4,(int)ans/2)));
         }
         return (ans + Random.Range(Mathf.Min(-3,-(int)ans/2),-1));
+    }
+
+    //Helper Method: Increment one of the operator stats
+    //Takes in the operator list that it wants to implement.
+    private void incrementOperator(int[] operatorStatsList){
+        switch(problemOperator){
+            case "+":
+                operatorStatsList[0]++;
+                break;
+            case "-":
+                operatorStatsList[1]++;
+                break;
+            case "*":
+                operatorStatsList[2]++;
+                break;
+            case "/":
+                operatorStatsList[3]++;
+                break;
+            case "%":
+                operatorStatsList[4]++;
+                break;
+        }
     }
 }

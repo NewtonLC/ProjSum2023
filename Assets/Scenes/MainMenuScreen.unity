@@ -3680,6 +3680,57 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1476027598}
   m_CullTransparentMesh: 1
+--- !u!1 &1533290281
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1533290283}
+  - component: {fileID: 1533290282}
+  m_Layer: 0
+  m_Name: SaveData
+  m_TagString: SaveData
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1533290282
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1533290281}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6dbe19e81f404b34dbbb057465117ff9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  gameData:
+    session_id: 
+    duration_seconds: 0
+    accuracy: 0
+    problems: []
+    time_per_question_average: 0
+    time_per_question_average_raw: 0
+--- !u!4 &1533290283
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1533290281}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -1.8832542, y: 0.16188957, z: 4444.6157}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 3
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1599188586
 GameObject:
   m_ObjectHideFlags: 0
@@ -3718,7 +3769,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 70}
-  m_SizeDelta: {x: 160, y: 30}
+  m_SizeDelta: {x: 160, y: 60}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1599188588
 MonoBehaviour:
@@ -4034,8 +4085,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 24
-  m_fontSizeBase: 24
+  m_fontSize: 30
+  m_fontSizeBase: 30
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -4438,10 +4489,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0cd44c1031e13a943bb63640046fad76, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_UiScaleMode: 0
+  m_UiScaleMode: 1
   m_ReferencePixelsPerUnit: 100
   m_ScaleFactor: 1
-  m_ReferenceResolution: {x: 800, y: 600}
+  m_ReferenceResolution: {x: 280, y: 600}
   m_ScreenMatchMode: 0
   m_MatchWidthOrHeight: 0
   m_PhysicalUnit: 3
@@ -4522,22 +4573,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 23011170291180e4db222e3e883ca07b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gameModes:
+  TMP_gameModes:
   - {fileID: 1652524836}
   - {fileID: 1372025396}
   - {fileID: 456667864}
   - {fileID: 346308721}
-  difficulties:
+  TMP_difficulties:
   - {fileID: 1470739669}
   - {fileID: 1801801917}
   - {fileID: 1840313039}
-  operators:
+  TMP_operators:
   - {fileID: 949177779}
   - {fileID: 1356376323}
   - {fileID: 391729122}
   - {fileID: 953301143}
   - {fileID: 258311670}
-  amounts:
+  TMP_amounts:
   - {fileID: 1476027600}
   - {fileID: 1127739878}
   - {fileID: 2113317938}
